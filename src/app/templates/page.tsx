@@ -25,7 +25,7 @@ export default function TemplatesPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     fetch("/api/templates").then(r => r.ok ? r.json() : { templates: [] }).then(data => {
-      const mapped = (data.templates || []).map((item: { id: string; title: string; description: string | null; occasion: string; category?: string; previewUrl: string; designJson: { heading?: string; tag?: string; background?: string; foreground?: string } }) => ({
+      const mapped = (data.templates || []).map((item: { id: string; title: string; description: string | null; occasion: string; category?: string; previewUrl: string; designJson: { category?: string; heading?: string; tag?: string; background?: string; foreground?: string } }) => ({
         id: item.id, name: item.title, category: item.category || item.designJson?.category || occasionNames[item.occasion] || "Festival",
         description: item.description || "A custom invitation design.", background: item.designJson?.background || "#f5e9df",
         foreground: item.designJson?.foreground || "#754c47", heading: item.designJson?.heading || item.title,
