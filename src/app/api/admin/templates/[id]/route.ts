@@ -15,6 +15,7 @@ const schema = z.object({
   tag: z.string().trim().max(120).default(""),
   background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   foreground: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  weddingText: z.string().max(12000).optional().default(""),
   status: z.enum(["DRAFT", "PUBLISHED"]),
 });
 const occasionMap: Record<string, Occasion> = {
@@ -35,7 +36,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
         title: value.title, slug: value.slug, description: value.description,
         occasion: occasionMap[value.category], language: value.language,
         previewUrl: value.previewUrl, status: value.status as TemplateStatus,
-        designJson: { category: value.category, heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground } as Prisma.InputJsonValue,
+        designJson: { category: value.category, heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground, weddingFields: value.category === "Wedding" ? value.weddingText.split("\n").map((line) => { const divider = line.indexOf("|"); return { label: divider >= 0 ? line.slice(0, divider).trim() : "Invitation text", text: divider >= 0 ? line.slice(divider + 1).trim() : line.trim() }; }).filter((field) => field.text).slice(0, 20) : [] } as Prisma.InputJsonValue,
       },
     });
     return NextResponse.json({ template });

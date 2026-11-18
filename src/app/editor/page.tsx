@@ -64,6 +64,7 @@ export default function EditorPage() {
       const templateId = new URLSearchParams(window.location.search).get("template") || "";
       let chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
       let customPreviewUrl: string | undefined;
+      let customWeddingFields: Array<{ label?: string; text?: string }> = [];
       if (!chosen && templateId) {
         const response = await fetch("/api/templates");
         if (response.ok) {
@@ -71,6 +72,7 @@ export default function EditorPage() {
           const custom = (data.templates || []).find((item: { id: string }) => item.id === templateId);
           if (custom) {
             const design = custom.designJson || {};
+            customWeddingFields = Array.isArray(design.weddingFields) ? design.weddingFields : [];
             chosen = { background: design.background || "#f5e9df", foreground: design.foreground || "#754c47", heading: design.heading || custom.title, tag: design.tag || "" };
             customPreviewUrl = custom.previewUrl;
           }
@@ -94,6 +96,19 @@ export default function EditorPage() {
           scaleY: 560 / (artwork.height || 560), selectable: false, evented: false,
         });
         instance.add(artwork);
+        if (customWeddingFields.length > 0) {
+          const count = Math.min(customWeddingFields.length, 20);
+          const step = Math.min(38, 420 / count);
+          const topStart = Math.max(45, 280 - count * step / 2);
+          customWeddingFields.slice(0, 20).forEach((field, index) => {
+            const text = new fabric.Textbox(field.text || field.label || "Edit invitation text", {
+              left: 210, top: topStart + index * step, originX: "center", width: 340,
+              textAlign: "center", fontFamily: "Arial", fontSize: index === 0 ? 17 : 14,
+              lineHeight: 1.15, fill: canvasText,
+            });
+            instance?.add(text);
+          });
+        }
       } else {
         const frame = new fabric.Rect({
           left: 22, top: 22, width: 376, height: 516, fill: "transparent",

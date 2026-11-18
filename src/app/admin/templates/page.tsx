@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const categories = ["Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Puja", "Anniversary", "Graduation", "Corporate", "Festival"];
-type Row = { id: string; title: string; slug: string; description: string | null; occasion: string; language: string; previewUrl: string; status: string; designJson: { category?: string; heading?: string; tag?: string; background?: string; foreground?: string } };
-type Draft = { title: string; slug: string; description: string; category: string; language: string; previewUrl: string; heading: string; tag: string; background: string; foreground: string; status: "DRAFT" | "PUBLISHED" };
-const empty: Draft = { title: "", slug: "", description: "", category: "Wedding", language: "en", previewUrl: "", heading: "You’re Invited", tag: "", background: "#f5e9df", foreground: "#754c47", status: "DRAFT" };
+type Row = { id: string; title: string; slug: string; description: string | null; occasion: string; language: string; previewUrl: string; status: string; designJson: { category?: string; heading?: string; tag?: string; background?: string; foreground?: string; weddingFields?: Array<{ label?: string; text?: string }> } };
+type Draft = { title: string; slug: string; description: string; category: string; language: string; previewUrl: string; heading: string; tag: string; background: string; foreground: string; weddingText: string; status: "DRAFT" | "PUBLISHED" };
+const empty: Draft = { title: "", slug: "", description: "", category: "Wedding", language: "en", previewUrl: "", heading: "You’re Invited", tag: "", background: "#f5e9df", foreground: "#754c47", weddingText: "Invitation opening|आपणांस सस्नेह निमंत्रण\nशुभ श्लोक|॥ श्री गणेशाय नमः ॥ वक्रतुंड महाकाय...\nGroom family|चि. [वराचे नाव] सुपुत्र श्री. [वडिलांचे नाव] व सौ. [आईचे नाव]\nBride family|सौ. का. [वधूचे नाव] सुपुत्री श्री. [वडिलांचे नाव] व सौ. [आईचे नाव]\nWedding date and time|[वार], [दिनांक] रोजी [वेळ] वाजता शुभमुहूर्तावर\nVenue heading|❉ विवाह स्थळ ❉\nVenue address|[हॉलचे नाव], [पूर्ण पत्ता]\nHaldi heading|❉ हळदी समारंभ ❉\nHaldi details|[वार], [दिनांक] रोजी [वेळ] वाजता [स्थळ]\nInviter and family|[निमंत्रकांची नावे] व समस्त परिवार\nFooter|आपली उपस्थिती प्रार्थनीय आहे", status: "DRAFT" };
 const field: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: 10, border: "1px solid #e5d9ce", borderRadius: 4, background: "white" };
 const label: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, color: "#6e655d", margin: "12px 0 6px" };
 
@@ -35,7 +35,7 @@ export default function AdminTemplatesPage() {
   function edit(item: Row) {
     const d = item.designJson || {};
     const category = d.category || (item.occasion === "BABY_SHOWER" ? "Baby shower" : item.occasion === "HOUSEWARMING" ? "Housewarming" : item.occasion === "NAMING_CEREMONY" ? "Naming ceremony" : item.occasion === "OTHER" ? "Festival" : item.occasion[0] + item.occasion.slice(1).toLowerCase());
-    setDraft({ title: item.title, slug: item.slug, description: item.description || "", category, language: item.language, previewUrl: item.previewUrl, heading: d.heading || item.title, tag: d.tag || "", background: d.background || "#f5e9df", foreground: d.foreground || "#754c47", status: item.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT" });
+    setDraft({ title: item.title, slug: item.slug, description: item.description || "", category, language: item.language, previewUrl: item.previewUrl, heading: d.heading || item.title, tag: d.tag || "", background: d.background || "#f5e9df", foreground: d.foreground || "#754c47", weddingText: Array.isArray(d.weddingFields) ? d.weddingFields.map((f: { label?: string; text?: string }) => `${f.label || "Section"}|${f.text || ""}`).join("\n") : empty.weddingText, status: item.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT" });
     setEditing(item.id); setMessage(""); window.scrollTo({ top: 0, behavior: "smooth" });
   }
   async function save(event: React.FormEvent) {
@@ -93,6 +93,7 @@ export default function AdminTemplatesPage() {
           <div><label style={label}>TEXT COLOUR</label><input type="color" value={draft.foreground} onChange={e => set("foreground", e.target.value)} style={{ ...field, height: 42, padding: 3 }} /></div>
         </div>
         <label style={label}>DESCRIPTION</label><textarea value={draft.description} onChange={e => set("description", e.target.value)} rows={2} style={field} />
+        {draft.category === "Wedding" && <><label style={label}>WEDDING INVITATION SECTIONS (ONE PER LINE: LABEL|TEXT)</label><textarea value={draft.weddingText} onChange={e => set("weddingText", e.target.value)} rows={12} style={{ ...field, fontFamily: "Arial,sans-serif", lineHeight: 1.6 }} /><small style={{ color: "#81776e" }}>Add or remove sections as needed. Each section becomes its own editable text item in the invitation editor. Use placeholders such as [Bride name], [Groom name], [Date], [Time] and [Venue].</small></>}
         <label style={label}>TEMPLATE IMAGE (PNG / JPG / WEBP · MAX 2 MB)</label><input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => chooseImage(e.target.files?.[0])} style={{ ...field, padding: 8 }} />
         {draft.previewUrl && <img src={draft.previewUrl} alt="Template preview" style={{ display: "block", maxWidth: 180, maxHeight: 240, objectFit: "contain", marginTop: 12, border: "1px solid #eee5dc" }} />}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 18, alignItems: "center" }}>
