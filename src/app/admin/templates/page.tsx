@@ -53,6 +53,23 @@ export default function AdminTemplatesPage() {
     const response = await fetch(`/api/admin/templates/${item.id}`, { method: "DELETE" });
     if (response.ok) { setMessage("Template deleted."); await load(); } else setMessage("Could not delete template.");
   }
+  async function setVisibility(item: Row) {
+    const visibility = item.status === "PUBLISHED" ? "PRIVATE" : "PUBLIC";
+    const response = await fetch(`/api/admin/templates/${item.id}/visibility`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ visibility }) });
+    if (response.ok) { setMessage(`${item.title} is now ${visibility.toLowerCase()}.`); await load(); }
+    else setMessage("Could not change template visibility.");
+  }
+  async function clearAll() {
+    if (!window.confirm("Delete EVERY existing template? This permanently removes all admin-uploaded templates from the database.")) return;
+    setBusy(true);
+    try {
+      const response = await fetch("/api/admin/templates", { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not delete templates.");
+      setItems([]); setEditing(null); setDraft(empty); setMessage(`Deleted ${result.deleted} existing templates.`);
+    } catch (err) { setMessage(err instanceof Error ? err.message : "Could not delete templates."); }
+    finally { setBusy(false); }
+  }
   async function logout() { await fetch("/api/admin/logout", { method: "POST" }); router.replace("/admin/login"); router.refresh(); }
   return <main style={{ minHeight: "100vh", background: "#faf7f2", color: "#302923", fontFamily: "Arial,sans-serif" }}>
     <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4" }}>
@@ -79,18 +96,18 @@ export default function AdminTemplatesPage() {
         <label style={label}>TEMPLATE IMAGE (PNG / JPG / WEBP · MAX 2 MB)</label><input type="file" accept="image/png,image/jpeg,image/webp" onChange={e => chooseImage(e.target.files?.[0])} style={{ ...field, padding: 8 }} />
         {draft.previewUrl && <img src={draft.previewUrl} alt="Template preview" style={{ display: "block", maxWidth: 180, maxHeight: 240, objectFit: "contain", marginTop: 12, border: "1px solid #eee5dc" }} />}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 18, alignItems: "center" }}>
-          <label style={{ fontSize: 13 }}><input type="checkbox" checked={draft.status === "PUBLISHED"} onChange={e => set("status", e.target.checked ? "PUBLISHED" : "DRAFT")} /> Publish immediately (otherwise save as draft)</label>
+          <label style={{ fontSize: 13 }}><input type="checkbox" checked={draft.status === "PUBLISHED"} onChange={e => set("status", e.target.checked ? "PUBLISHED" : "DRAFT")} /> Make public immediately (otherwise keep private)</label>
           <button disabled={busy} style={{ padding: "12px 20px", border: 0, borderRadius: 4, background: "#8d3f4b", color: "white", fontWeight: 700, cursor: "pointer" }}>{busy ? "Saving…" : editing ? "Save changes" : "Add template"}</button>
           {editing && <button type="button" onClick={() => { setEditing(null); setDraft(empty); }} style={{ padding: "12px 16px", border: "1px solid #e5d9ce", background: "white", borderRadius: 4, cursor: "pointer" }}>Cancel edit</button>}
         </div>
         {message && <p role="status" style={{ color: "#6b5146", fontSize: 13, marginBottom: 0 }}>{message}</p>}
       </form>
-      <h2 style={{ fontFamily: "Georgia,serif", fontSize: 24, marginTop: 34 }}>Your templates ({items.length})</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, marginTop: 34, flexWrap: "wrap" }}><h2 style={{ fontFamily: "Georgia,serif", fontSize: 24, margin: 0 }}>Your templates ({items.length})</h2><button type="button" disabled={busy || items.length === 0} onClick={() => void clearAll()} style={{ padding: "10px 14px", border: "1px solid #b94b50", borderRadius: 4, background: "white", color: "#a12f36", cursor: "pointer" }}>Delete all existing templates</button></div>
       {loading ? <p>Loading templates…</p> : <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
         {items.map(item => <article key={item.id} style={{ background: "#fffdfa", border: "1px solid #eee5dc", borderRadius: 7, padding: 12 }}>
           <img src={item.previewUrl} alt={item.title} style={{ width: "100%", height: 180, objectFit: "contain", background: "#f2eee8" }} />
-          <strong style={{ display: "block", marginTop: 10 }}>{item.title}</strong><small style={{ color: "#81776e" }}>{item.occasion.replaceAll("_", " ")} · {item.status}</small>
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}><button onClick={() => edit(item)} style={smallButton}>Edit</button><button onClick={() => void remove(item)} style={{ ...smallButton, color: "#a12f36" }}>Delete</button></div>
+          <strong style={{ display: "block", marginTop: 10 }}>{item.title}</strong><small style={{ color: "#81776e" }}>{item.occasion.replaceAll("_", " ")} · {item.status === "PUBLISHED" ? "PUBLIC" : "PRIVATE"}</small>
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}><button onClick={() => edit(item)} style={smallButton}>Edit</button><button onClick={() => void setVisibility(item)} style={smallButton}>{item.status === "PUBLISHED" ? "Make private" : "Make public"}</button><button onClick={() => void remove(item)} style={{ ...smallButton, color: "#a12f36" }}>Delete</button></div>
         </article>)}
         {items.length === 0 && <p>No custom templates yet. Add your first one above.</p>}
       </div>}
