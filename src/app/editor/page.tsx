@@ -138,7 +138,7 @@ export default function EditorPage() {
       instance?.dispose();
       canvasRef.current = null;
     };
-  }, [background, textColor, syncSelection]);
+  }, [syncSelection]);
 
   function addText() {
     if (!canvasRef.current) return;
