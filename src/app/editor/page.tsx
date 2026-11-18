@@ -43,7 +43,20 @@ export default function EditorPage() {
         "diwali": { background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
       };
       const templateId = new URLSearchParams(window.location.search).get("template") || "";
-      const chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
+      let chosen: { background: string; foreground: string; heading: string; tag: string } | undefined = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
+      let customPreviewUrl: string | undefined;
+      if (!chosen && templateId) {
+        const response = await fetch("/api/templates");
+        if (response.ok) {
+          const data = await response.json();
+          const custom = (data.templates || []).find((item: { id: string }) => item.id === templateId);
+          if (custom) {
+            const design = custom.designJson || {};
+            chosen = { background: design.background || "#f5e9df", foreground: design.foreground || "#754c47", heading: design.heading || custom.title, tag: design.tag || "" };
+            customPreviewUrl = custom.previewUrl;
+          }
+        }
+      }
       const canvasBackground = chosen?.background || background;
       const canvasText = chosen?.foreground || textColor;
       if (chosen) { setBackground(chosen.background); setTextColor(chosen.foreground); }
@@ -58,31 +71,42 @@ export default function EditorPage() {
       }) as unknown as FabricCanvas;
       canvasRef.current = instance;
 
-      const frame = new fabric.Rect({
-        left: 22, top: 22, width: 376, height: 516,
-        fill: "transparent", stroke: "#b78e70", strokeWidth: 1,
-        selectable: false, evented: false,
-      });
-      const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
-        left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
-        fill: canvasText, selectable: false, evented: false,
-      });
-      const heading = new fabric.Textbox(chosen?.heading || "You’re Invited", {
-        left: 210, top: 175, originX: "center", width: 330,
-        textAlign: "center", fontFamily: "Georgia", fontSize: 38,
-        fill: canvasText, fontWeight: "bold",
-      });
-      const details = new fabric.Textbox("Together with our families\nwe invite you to celebrate\nour special day", {
-        left: 210, top: 265, originX: "center", width: 320,
-        textAlign: "center", fontFamily: "Georgia", fontSize: 19,
-        lineHeight: 1.5, fill: canvasText,
-      });
-      const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\nThe Grand Celebration, Pune", {
-        left: 210, top: 405, originX: "center", width: 330,
-        textAlign: "center", fontFamily: "Arial", fontSize: 15,
-        lineHeight: 1.6, fill: canvasText,
-      });
-      instance.add(frame, ornament, heading, details, footer);
+      if (customPreviewUrl) {
+        const artwork = await fabric.FabricImage.fromURL(customPreviewUrl);
+        artwork.set({
+          left: 0, top: 0,
+          scaleX: 420 / (artwork.width || 420),
+          scaleY: 560 / (artwork.height || 560),
+          selectable: false, evented: false,
+        });
+        instance.add(artwork);
+      } else {
+        const frame = new fabric.Rect({
+          left: 22, top: 22, width: 376, height: 516,
+          fill: "transparent", stroke: "#b78e70", strokeWidth: 1,
+          selectable: false, evented: false,
+        });
+        const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
+          left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
+          fill: canvasText, selectable: false, evented: false,
+        });
+        const heading = new fabric.Textbox(chosen?.heading || "You’re Invited", {
+          left: 210, top: 175, originX: "center", width: 330,
+          textAlign: "center", fontFamily: "Georgia", fontSize: 38,
+          fill: canvasText, fontWeight: "bold",
+        });
+        const details = new fabric.Textbox("Together with our families\\nwe invite you to celebrate\\nour special day", {
+          left: 210, top: 265, originX: "center", width: 320,
+          textAlign: "center", fontFamily: "Georgia", fontSize: 19,
+          lineHeight: 1.5, fill: canvasText,
+        });
+        const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\\nThe Grand Celebration, Pune", {
+          left: 210, top: 405, originX: "center", width: 330,
+          textAlign: "center", fontFamily: "Arial", fontSize: 15,
+          lineHeight: 1.6, fill: canvasText,
+        });
+        instance.add(frame, ornament, heading, details, footer);
+      }
       instance.renderAll();
       setReady(true);
     }
