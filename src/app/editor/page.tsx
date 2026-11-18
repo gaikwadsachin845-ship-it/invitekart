@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 type FabricCanvas = {
-  add: (object: unknown) => void;
+  add: (...objects: unknown[]) => void;
   remove: (object: unknown) => void;
   getActiveObject: () => unknown;
   discardActiveObject: () => void;
