@@ -162,10 +162,32 @@ export default function EditorPage() {
     canvas?.renderAll();
   }
 
+  function changeFontSize(value: number) {
+    setFontSize(value);
+    const canvas = canvasRef.current;
+    const selected = canvas?.getActiveObject() as {
+      type?: string;
+      set?: (value: object) => void;
+      initDimensions?: () => void;
+      setCoords?: () => void;
+    } | undefined;
+    if (selected && ["textbox", "text", "i-text"].includes(selected.type || "")) {
+      selected.set?.({ fontSize: value });
+      selected.initDimensions?.();
+      selected.setCoords?.();
+      canvas?.renderAll();
+    }
+  }
+
   function applyTextSettings() {
     const canvas = canvasRef.current;
-    const selected = canvas?.getActiveObject() as { set?: (value: object) => void } | undefined;
-    if (!selected) {
+    const selected = canvas?.getActiveObject() as {
+      type?: string;
+      set?: (value: object) => void;
+      initDimensions?: () => void;
+      setCoords?: () => void;
+    } | undefined;
+    if (!selected || !["textbox", "text", "i-text"].includes(selected.type || "")) {
       setStatus("Select a text item on the invitation first");
       return;
     }
@@ -175,6 +197,8 @@ export default function EditorPage() {
       fontWeight: bold ? "bold" : "normal",
       textAlign: alignment,
     });
+    selected.initDimensions?.();
+    selected.setCoords?.();
     canvas?.renderAll();
     setStatus("Text formatting updated");
   }
@@ -239,7 +263,7 @@ export default function EditorPage() {
               <option>Georgia</option><option>Arial</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option>
             </select>
             <label style={fieldLabel}>FONT SIZE · {fontSize}px</label>
-            <input aria-label="Font size" type="range" min="10" max="64" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} style={{ width: "100%" }} />
+            <input aria-label="Font size" type="range" min="10" max="64" value={fontSize} onChange={e => changeFontSize(Number(e.target.value))} style={{ width: "100%" }} />
             <label style={{ ...toolButton, display: "flex", alignItems: "center", gap: 8 }}>
               <input type="checkbox" checked={bold} onChange={e => setBold(e.target.checked)} /> Bold text
             </label>
