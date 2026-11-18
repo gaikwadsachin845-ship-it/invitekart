@@ -273,7 +273,7 @@ export default function EditorPage() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save invitation");
-      const shareUrl = \`\${window.location.origin}/invite/\${result.shareId}\`;
+      const shareUrl = `${window.location.origin}/invite/${result.shareId}`;
       await navigator.clipboard.writeText(shareUrl);
       setStatus("Saved! Share link copied to your clipboard.");
     } catch {
