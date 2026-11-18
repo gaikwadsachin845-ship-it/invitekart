@@ -1,18 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { weddingTemplates } from "@/lib/wedding-templates";
 
+type FabricObject = {
+  type?: string;
+  text?: string;
+  fill?: string;
+  set?: (value: Record<string, unknown>) => void;
+  setCoords?: () => void;
+  initDimensions?: () => void;
+};
 type FabricCanvas = {
   add: (...objects: unknown[]) => void;
   remove: (object: unknown) => void;
-  getActiveObject: () => unknown;
+  getActiveObject: () => FabricObject | undefined;
   discardActiveObject: () => void;
   renderAll: () => void;
   toDataURL: (options: { format: string; multiplier: number }) => string;
   setBackgroundColor: (color: string, callback?: () => void) => void;
   dispose: () => void;
   toJSON: () => Record<string, unknown>;
+  on: (event: string, handler: () => void) => void;
+  off: (event: string, handler: () => void) => void;
 };
 
 export default function EditorPage() {
@@ -26,6 +36,23 @@ export default function EditorPage() {
   const [fontSize, setFontSize] = useState(24);
   const [bold, setBold] = useState(false);
   const [alignment, setAlignment] = useState("center");
+  const [selectedText, setSelectedText] = useState("");
+  const [shareTitle, setShareTitle] = useState("My InviteKart invitation");
+  const [language, setLanguage] = useState("en");
+  const [selectedIsText, setSelectedIsText] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const syncSelection = useCallback(() => {
+    const selected = canvasRef.current?.getActiveObject();
+    const isText = !!selected && ["textbox", "text", "i-text"].includes(selected.type || "");
+    setSelectedIsText(isText);
+    if (isText && selected) {
+      setSelectedText(selected.text || "");
+      setTextColor(typeof selected.fill === "string" ? selected.fill : "#754c47");
+    } else {
+      setSelectedText("");
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -43,7 +70,7 @@ export default function EditorPage() {
         "diwali": { background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
       };
       const templateId = new URLSearchParams(window.location.search).get("template") || "";
-      let chosen: { background: string; foreground: string; heading: string; tag: string } | undefined = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
+      let chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
       let customPreviewUrl: string | undefined;
       if (!chosen && templateId) {
         const response = await fetch("/api/templates");
@@ -63,50 +90,44 @@ export default function EditorPage() {
       const fabric = await import("fabric");
       if (!active || !elementRef.current) return;
       instance = new fabric.Canvas(elementRef.current, {
-        width: 420,
-        height: 560,
-        backgroundColor: canvasBackground,
-        preserveObjectStacking: true,
-        selection: true,
+        width: 420, height: 560, backgroundColor: canvasBackground,
+        preserveObjectStacking: true, selection: true,
       }) as unknown as FabricCanvas;
       canvasRef.current = instance;
 
       if (customPreviewUrl) {
         const artwork = await fabric.FabricImage.fromURL(customPreviewUrl);
         artwork.set({
-          left: 0, top: 0,
-          scaleX: 420 / (artwork.width || 420),
-          scaleY: 560 / (artwork.height || 560),
-          selectable: false, evented: false,
+          left: 0, top: 0, scaleX: 420 / (artwork.width || 420),
+          scaleY: 560 / (artwork.height || 560), selectable: false, evented: false,
         });
         instance.add(artwork);
       } else {
         const frame = new fabric.Rect({
-          left: 22, top: 22, width: 376, height: 516,
-          fill: "transparent", stroke: "#b78e70", strokeWidth: 1,
-          selectable: false, evented: false,
+          left: 22, top: 22, width: 376, height: 516, fill: "transparent",
+          stroke: "#b78e70", strokeWidth: 1, selectable: false, evented: false,
         });
         const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
           left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
           fill: canvasText, selectable: false, evented: false,
         });
         const heading = new fabric.Textbox(chosen?.heading || "You’re Invited", {
-          left: 210, top: 175, originX: "center", width: 330,
-          textAlign: "center", fontFamily: "Georgia", fontSize: 38,
-          fill: canvasText, fontWeight: "bold",
+          left: 210, top: 175, originX: "center", width: 330, textAlign: "center",
+          fontFamily: "Georgia", fontSize: 38, fill: canvasText, fontWeight: "bold",
         });
-        const details = new fabric.Textbox("Together with our families\\nwe invite you to celebrate\\nour special day", {
-          left: 210, top: 265, originX: "center", width: 320,
-          textAlign: "center", fontFamily: "Georgia", fontSize: 19,
-          lineHeight: 1.5, fill: canvasText,
+        const details = new fabric.Textbox("Together with our families\nwe invite you to celebrate\nour special day", {
+          left: 210, top: 265, originX: "center", width: 320, textAlign: "center",
+          fontFamily: "Georgia", fontSize: 19, lineHeight: 1.5, fill: canvasText,
         });
-        const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\\nThe Grand Celebration, Pune", {
-          left: 210, top: 405, originX: "center", width: 330,
-          textAlign: "center", fontFamily: "Arial", fontSize: 15,
-          lineHeight: 1.6, fill: canvasText,
+        const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\nThe Grand Celebration, Pune", {
+          left: 210, top: 405, originX: "center", width: 330, textAlign: "center",
+          fontFamily: "Arial", fontSize: 15, lineHeight: 1.6, fill: canvasText,
         });
         instance.add(frame, ornament, heading, details, footer);
       }
+      const selectionEvents = ["selection:created", "selection:updated"];
+      selectionEvents.forEach((event) => instance?.on(event, syncSelection));
+      instance.on("selection:cleared", syncSelection);
       instance.renderAll();
       setReady(true);
     }
@@ -117,18 +138,20 @@ export default function EditorPage() {
       instance?.dispose();
       canvasRef.current = null;
     };
-  }, []);
+  }, [syncSelection]);
 
   function addText() {
     if (!canvasRef.current) return;
     import("fabric").then(({ Textbox }) => {
       const text = new Textbox("Edit this text", {
         left: 75, top: 470, width: 270, fontSize: 22,
-        fill: textColor, fontFamily: "Georgia",
-        textAlign: "center",
+        fill: textColor, fontFamily: "Georgia", textAlign: "center",
       });
       canvasRef.current?.add(text);
-      setStatus("Text added — select it to move or resize");
+      canvasRef.current?.setActiveObject(text);
+      canvasRef.current?.renderAll();
+      syncSelection();
+      setStatus("Text added — use the text editor to personalise it");
     });
   }
 
@@ -136,9 +159,8 @@ export default function EditorPage() {
     if (!canvasRef.current) return;
     import("fabric").then(({ Rect }) => {
       canvasRef.current?.add(new Rect({
-        left: 130, top: 330, width: 150, height: 70,
-        fill: "transparent", stroke: textColor, strokeWidth: 2,
-        rx: 8, ry: 8,
+        left: 130, top: 330, width: 150, height: 70, fill: "transparent",
+        stroke: textColor, strokeWidth: 2, rx: 8, ry: 8,
       }));
       setStatus("Decorative frame added");
     });
@@ -146,33 +168,45 @@ export default function EditorPage() {
 
   async function addImage(file?: File) {
     if (!file || !canvasRef.current) return;
+    if (!file.type.startsWith("image/")) {
+      setStatus("Please choose an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setStatus("Please choose an image smaller than 5 MB");
+      return;
+    }
     const url = URL.createObjectURL(file);
     try {
       const { FabricImage } = await import("fabric");
       const image = await FabricImage.fromURL(url);
-      const maxSide = 180;
+      const maxSide = 220;
       const scale = Math.min(maxSide / (image.width || maxSide), maxSide / (image.height || maxSide), 1);
-      image.set({ left: 120, top: 180, scaleX: scale, scaleY: scale });
+      image.set({ left: 100, top: 170, scaleX: scale, scaleY: scale });
       canvasRef.current?.add(image);
-      setStatus("Photo added — drag the corners to resize");
+      canvasRef.current?.setActiveObject(image);
+      canvasRef.current?.renderAll();
+      syncSelection();
+      setStatus("Photo added — select it and drag the corners to resize");
     } catch {
       setStatus("This image could not be added");
     } finally {
       URL.revokeObjectURL(url);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
   function deleteSelected() {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const selected = canvas.getActiveObject();
-    if (!selected) {
+    const selected = canvas?.getActiveObject();
+    if (!canvas || !selected) {
       setStatus("Select an item on the invitation first");
       return;
     }
     canvas.remove(selected);
     canvas.discardActiveObject();
     canvas.renderAll();
+    syncSelection();
     setStatus("Selected item removed");
   }
 
@@ -183,21 +217,26 @@ export default function EditorPage() {
 
   function changeTextColor(color: string) {
     setTextColor(color);
-    const canvas = canvasRef.current;
-    const selected = canvas?.getActiveObject() as { set?: (value: object) => void } | undefined;
+    const selected = canvasRef.current?.getActiveObject();
     selected?.set?.({ fill: color });
+    canvasRef.current?.renderAll();
+  }
+
+  function updateSelectedText(value: string) {
+    setSelectedText(value);
+    const canvas = canvasRef.current;
+    const selected = canvas?.getActiveObject();
+    if (!selected || !["textbox", "text", "i-text"].includes(selected.type || "")) return;
+    selected.set?.({ text: value });
+    selected.initDimensions?.();
+    selected.setCoords?.();
     canvas?.renderAll();
   }
 
   function changeFontSize(value: number) {
     setFontSize(value);
     const canvas = canvasRef.current;
-    const selected = canvas?.getActiveObject() as {
-      type?: string;
-      set?: (value: object) => void;
-      initDimensions?: () => void;
-      setCoords?: () => void;
-    } | undefined;
+    const selected = canvas?.getActiveObject();
     if (selected && ["textbox", "text", "i-text"].includes(selected.type || "")) {
       selected.set?.({ fontSize: value });
       selected.initDimensions?.();
@@ -208,21 +247,13 @@ export default function EditorPage() {
 
   function applyTextSettings() {
     const canvas = canvasRef.current;
-    const selected = canvas?.getActiveObject() as {
-      type?: string;
-      set?: (value: object) => void;
-      initDimensions?: () => void;
-      setCoords?: () => void;
-    } | undefined;
+    const selected = canvas?.getActiveObject();
     if (!selected || !["textbox", "text", "i-text"].includes(selected.type || "")) {
       setStatus("Select a text item on the invitation first");
       return;
     }
     selected.set?.({
-      fontFamily,
-      fontSize,
-      fontWeight: bold ? "bold" : "normal",
-      textAlign: alignment,
+      fontFamily, fontSize, fontWeight: bold ? "bold" : "normal", textAlign: alignment,
     });
     selected.initDimensions?.();
     selected.setCoords?.();
@@ -238,15 +269,11 @@ export default function EditorPage() {
       const response = await fetch("/api/invitations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: "My InviteKart invitation",
-          language: "en",
-          designJson: canvas.toJSON(),
-        }),
+        body: JSON.stringify({ title: shareTitle.trim() || "My InviteKart invitation", language, designJson: canvas.toJSON() }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not save invitation");
-      const shareUrl = `${window.location.origin}/invite/${result.shareId}`;
+      const shareUrl = \`\${window.location.origin}/invite/\${result.shareId}\`;
       await navigator.clipboard.writeText(shareUrl);
       setStatus("Saved! Share link copied to your clipboard.");
     } catch {
@@ -268,7 +295,7 @@ export default function EditorPage() {
 
   return (
     <main style={{ minHeight: "100vh", background: "#faf7f2", color: "#302923", fontFamily: "Arial, sans-serif" }}>
-      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4" }}>
+      <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4", flexWrap: "wrap" }}>
         <a href="/" style={{ color: "#302923", textDecoration: "none", fontFamily: "Georgia, serif", fontSize: 25, fontWeight: 700 }}>InviteKart<span style={{ color: "#8d3f4b" }}>.</span></a>
         <div style={{ fontSize: 13, color: "#81776e" }}>Invitation Studio</div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}><button onClick={saveAndShare} disabled={!ready} style={secondaryButton}>Save & share ↗</button><button onClick={downloadPng} disabled={!ready} style={primaryButton}>Download PNG ↓</button></div>
@@ -277,21 +304,27 @@ export default function EditorPage() {
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "30px 20px" }}>
         <div style={{ marginBottom: 22 }}>
           <div style={{ color: "#8d3f4b", letterSpacing: 2, fontSize: 11, fontWeight: 700 }}>DESIGN YOUR MOMENT</div>
-          <h1 style={{ fontFamily: "Georgia, serif", fontSize: 34, margin: "8px 0" }}>Advanced invitation editor</h1>
-          <p style={{ color: "#81776e", margin: 0 }}>Select any text or object on the invitation to move, resize, rotate or edit it.</p>
+          <h1 style={{ fontFamily: "Georgia, serif", fontSize: 34, margin: "8px 0" }}>Personalise your invitation</h1>
+          <p style={{ color: "#81776e", margin: 0 }}>Select any text or photo on the card. Edit the wording, change its style, or drag its corners to resize.</p>
         </div>
 
-        <div className="ik-editor-layout" style={{ display: "grid", gridTemplateColumns: "250px minmax(0, 1fr) 250px", gap: 22, alignItems: "start" }}>
+        <div className="ik-editor-layout" style={{ display: "grid", gridTemplateColumns: "250px minmax(0, 1fr) 270px", gap: 22, alignItems: "start" }}>
           <aside style={panelStyle}>
             <h3 style={panelHeading}>Add elements</h3>
             <button style={toolButton} onClick={addText}>＋ Add text</button>
             <button style={toolButton} onClick={addShape}>▢ Add decorative frame</button>
-            <label style={{ ...toolButton, display: "block", textAlign: "center", cursor: "pointer" }}>
-              ＋ Upload photo
-              <input type="file" accept="image/*" hidden onChange={e => addImage(e.target.files?.[0])} />
-            </label>
+            <button style={toolButton} onClick={() => fileInputRef.current?.click()}>＋ Upload photo</button>
+            <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={e => addImage(e.target.files?.[0])} />
             <button style={{ ...toolButton, color: "#9a3434" }} onClick={deleteSelected}>⌫ Delete selected</button>
-            <p style={{ fontSize: 12, color: "#81776e", lineHeight: 1.6 }}>Tip: Click an item on the card. Drag it to reposition, or use its corner handles to resize and rotate.</p>
+            <p style={{ fontSize: 12, color: "#81776e", lineHeight: 1.6 }}>Tip: Select an item on the card. Drag it to move, use the corner handles to resize, and use the top handle to rotate.</p>
+            <div style={{ borderTop: "1px solid #eee5dc", margin: "18px 0" }} />
+            <h3 style={panelHeading}>Share details</h3>
+            <label style={fieldLabel}>INVITATION TITLE</label>
+            <input value={shareTitle} onChange={e => setShareTitle(e.target.value)} maxLength={100} style={textInput} />
+            <label style={fieldLabel}>LANGUAGE</label>
+            <select value={language} onChange={e => setLanguage(e.target.value)} style={selectInput}>
+              <option value="en">English</option><option value="hi">हिन्दी</option><option value="mr">मराठी</option><option value="kn">ಕನ್ನಡ</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option>
+            </select>
           </aside>
 
           <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 }}>
@@ -300,14 +333,23 @@ export default function EditorPage() {
                 <canvas ref={elementRef} />
               </div>
             </div>
-            <div role="status" style={{ fontSize: 12, color: "#6e655d", minHeight: 18 }}>{ready ? status : "Loading editor…"}</div>
+            <div role="status" aria-live="polite" style={{ fontSize: 12, color: "#6e655d", minHeight: 18, textAlign: "center" }}>{ready ? status : "Loading editor…"}</div>
           </section>
 
           <aside style={panelStyle}>
-            <h3 style={panelHeading}>Design settings</h3>
+            <h3 style={panelHeading}>Edit selected item</h3>
+            {selectedIsText ? (
+              <>
+                <label style={fieldLabel}>YOUR TEXT</label>
+                <textarea aria-label="Selected invitation text" value={selectedText} onChange={e => updateSelectedText(e.target.value)} rows={5} style={textAreaInput} />
+                <p style={{ fontSize: 11, color: "#81776e", lineHeight: 1.5 }}>Changes appear on the card as you type. Add names, event details, date, time and venue here.</p>
+              </>
+            ) : (
+              <p style={{ fontSize: 12, color: "#81776e", lineHeight: 1.6 }}>Select a text item on the card to edit its wording. Select a photo to move, resize or rotate it.</p>
+            )}
             <label style={fieldLabel}>BACKGROUND COLOR</label>
             <input aria-label="Background color" type="color" value={background} onChange={e => changeBackground(e.target.value)} style={colorInput} />
-            <label style={fieldLabel}>TEXT / OBJECT COLOR</label>
+            <label style={fieldLabel}>SELECTED TEXT COLOR</label>
             <input aria-label="Text color" type="color" value={textColor} onChange={e => changeTextColor(e.target.value)} style={colorInput} />
             <label style={fieldLabel}>FONT FAMILY</label>
             <select aria-label="Font family" value={fontFamily} onChange={e => setFontFamily(e.target.value)} style={selectInput}>
@@ -323,20 +365,11 @@ export default function EditorPage() {
               <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
             </select>
             <button style={toolButton} onClick={applyTextSettings}>Apply text formatting</button>
-            <div style={{ borderTop: "1px solid #eee5dc", margin: "18px 0" }} />
-            <h3 style={panelHeading}>Coming next</h3>
-            <ul style={{ paddingLeft: 18, color: "#81776e", fontSize: 12, lineHeight: 1.9 }}>
-              <li>Template gallery inside editor</li>
-              <li>Undo and redo history</li>
-              <li>More fonts and stickers</li>
-              <li>Save and share invitations</li>
-              <li>PDF export</li>
-            </ul>
           </aside>
         </div>
       </section>
 
-      <style>{`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}`}</style>
+      <style>{\`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}\`}</style>
     </main>
   );
 }
@@ -349,3 +382,5 @@ const toolButton: React.CSSProperties = { width: "100%", display: "block", margi
 const fieldLabel: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, color: "#6e655d", margin: "13px 0 7px" };
 const colorInput: React.CSSProperties = { width: "100%", height: 42, border: "1px solid #e8ded4", background: "white", padding: 4, borderRadius: 4 };
 const selectInput: React.CSSProperties = { width: "100%", padding: 10, border: "1px solid #e8ded4", background: "white", borderRadius: 4, color: "#403832" };
+const textInput: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: 10, border: "1px solid #e8ded4", background: "white", borderRadius: 4, color: "#403832" };
+const textAreaInput: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: 10, border: "1px solid #e8ded4", background: "white", borderRadius: 4, color: "#403832", resize: "vertical", font: "13px Arial, sans-serif" };
