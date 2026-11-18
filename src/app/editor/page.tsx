@@ -12,6 +12,7 @@ type FabricCanvas = {
   toDataURL: (options: { format: string; multiplier: number }) => string;
   setBackgroundColor: (color: string, callback?: () => void) => void;
   dispose: () => void;
+  toJSON: () => Record<string, unknown>;
 };
 
 export default function EditorPage() {
@@ -205,6 +206,30 @@ export default function EditorPage() {
     setStatus("Text formatting updated");
   }
 
+  async function saveAndShare() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setStatus("Saving your invitation…");
+    try {
+      const response = await fetch("/api/invitations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "My InviteKart invitation",
+          language: "en",
+          designJson: canvas.toJSON(),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not save invitation");
+      const shareUrl = `${window.location.origin}/invite/${result.shareId}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setStatus("Saved! Share link copied to your clipboard.");
+    } catch {
+      setStatus("Could not save or copy the link. Please check your connection and try again.");
+    }
+  }
+
   function downloadPng() {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -222,7 +247,7 @@ export default function EditorPage() {
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4" }}>
         <a href="/" style={{ color: "#302923", textDecoration: "none", fontFamily: "Georgia, serif", fontSize: 25, fontWeight: 700 }}>InviteKart<span style={{ color: "#8d3f4b" }}>.</span></a>
         <div style={{ fontSize: 13, color: "#81776e" }}>Invitation Studio</div>
-        <button onClick={downloadPng} disabled={!ready} style={primaryButton}>Download PNG ↓</button>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}><button onClick={saveAndShare} disabled={!ready} style={secondaryButton}>Save & share ↗</button><button onClick={downloadPng} disabled={!ready} style={primaryButton}>Download PNG ↓</button></div>
       </header>
 
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "30px 20px" }}>
@@ -292,6 +317,7 @@ export default function EditorPage() {
   );
 }
 
+const secondaryButton: React.CSSProperties = { border: "1px solid #8d3f4b", background: "white", color: "#8d3f4b", padding: "12px 15px", borderRadius: 4, fontWeight: 700, cursor: "pointer" };
 const primaryButton: React.CSSProperties = { border: 0, background: "#8d3f4b", color: "white", padding: "12px 17px", borderRadius: 4, fontWeight: 700, cursor: "pointer" };
 const panelStyle: React.CSSProperties = { background: "#fffdfa", border: "1px solid #eee5dc", borderRadius: 7, padding: 18 };
 const panelHeading: React.CSSProperties = { fontFamily: "Georgia, serif", fontSize: 18, margin: "0 0 15px" };
