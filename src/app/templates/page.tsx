@@ -18,7 +18,8 @@ const occasionNames: Record<string, string> = { WEDDING: "Wedding", BIRTHDAY: "B
 export default function TemplatesPage() {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
-  const [customTemplates, setCustomTemplates] = useState<GalleryTemplate[]>([]);\n  const [isAdmin, setIsAdmin] = useState(false);
+  const [customTemplates, setCustomTemplates] = useState<GalleryTemplate[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     fetch("/api/templates").then(r => r.ok ? r.json() : { templates: [] }).then(data => {
       const mapped = (data.templates || []).map((item: { id: string; title: string; description: string | null; occasion: string; previewUrl: string; designJson: { heading?: string; tag?: string; background?: string; foreground?: string } }) => ({
