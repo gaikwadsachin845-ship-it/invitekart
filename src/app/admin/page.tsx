@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function AdminLanding(){return <main style={{maxWidth:760,margin:"80px auto",padding:24,fontFamily:"Arial"}}><h1>InviteKart Admin</h1><p>Admin dashboard foundation. Protect this route with your chosen authentication provider before production launch.</p><ul><li>Template catalogue and publishing workflow — database model ready</li><li>Template API — GET /api/templates</li><li>Invitation records — POST /api/invitations</li></ul><p><Link href="/">← Back to storefront</Link></p></main>}
