@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 
 type SavedInvitation = {
   title: string;
   designJson: Record<string, unknown>;
 };
 
-export default function SharedInvitationPage({ params }: { params: { shareId: string } }) {
+export default function SharedInvitationPage() {
+  const routeParams = useParams<{ shareId: string }>();
+  const shareId = routeParams.shareId;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [invitation, setInvitation] = useState<SavedInvitation | null>(null);
   const [status, setStatus] = useState("Loading invitation…");
@@ -18,7 +21,7 @@ export default function SharedInvitationPage({ params }: { params: { shareId: st
 
     async function loadInvitation() {
       try {
-        const response = await fetch(`/api/invitations/${params.shareId}`);
+        const response = await fetch(`/api/invitations/${shareId}`);
         if (!response.ok) throw new Error("Invitation not found");
         const data = await response.json();
         if (!active) return;
