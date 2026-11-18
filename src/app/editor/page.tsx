@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { weddingTemplates } from "@/lib/wedding-templates";
 
 type FabricCanvas = {
   add: (...objects: unknown[]) => void;
@@ -40,7 +41,8 @@ export default function EditorPage() {
         "housewarming": { background: "#eee6d9", foreground: "#78634b", heading: "Home Sweet Home", tag: "PLEASE JOIN OUR HOUSEWARMING" },
         "diwali": { background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
       };
-      const chosen = presets[new URLSearchParams(window.location.search).get("template") || ""];
+      const templateId = new URLSearchParams(window.location.search).get("template") || "";
+      const chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
       const canvasBackground = chosen?.background || background;
       const canvasText = chosen?.foreground || textColor;
       if (chosen) { setBackground(chosen.background); setTextColor(chosen.foreground); }
