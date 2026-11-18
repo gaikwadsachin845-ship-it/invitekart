@@ -512,4 +512,255 @@ export const weddingTemplates: InvitationTemplate[] = [
     "heading": "मंगल फेरे",
     "tag": "सादर आमंत्रण"
   }
+,
+  {
+    "id": "birthday-1-pastel-balloon-bash",
+    "name": "Pastel Balloon Bash",
+    "category": "Birthday",
+    "description": "An original birthday invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#fff0e7",
+    "foreground": "#a64d65",
+    "heading": "Let’s Celebrate!",
+    "tag": "A DAY FULL OF LAUGHTER"
+  },
+  {
+    "id": "birthday-2-rainbow-confetti",
+    "name": "Rainbow Confetti",
+    "category": "Birthday",
+    "description": "An original birthday invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#fff4c9",
+    "foreground": "#8c5b31",
+    "heading": "Make a Wish!",
+    "tag": "BIRTHDAY JOY AWAITS"
+  },
+  {
+    "id": "birthday-3-little-dino-party",
+    "name": "Little Dino Party",
+    "category": "Birthday",
+    "description": "An original birthday invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e3f0df",
+    "foreground": "#42694d",
+    "heading": "Roar! It’s Party Time",
+    "tag": "YOU’RE INVITED"
+  },
+  {
+    "id": "birthday-4-midnight-celebration",
+    "name": "Midnight Celebration",
+    "category": "Birthday",
+    "description": "An original birthday invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#252d4a",
+    "foreground": "#f5d58c",
+    "heading": "Another Year Brighter",
+    "tag": "BIRTHDAY UNDER THE STARS"
+  },
+  {
+    "id": "birthday-5-floral-birthday",
+    "name": "Floral Birthday",
+    "category": "Birthday",
+    "description": "An original birthday invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f6e5ed",
+    "foreground": "#92556c",
+    "heading": "A Blooming Birthday",
+    "tag": "CELEBRATE WITH US"
+  },
+  {
+    "id": "engagement-6-blush-ring-ceremony",
+    "name": "Blush Ring Ceremony",
+    "category": "Engagement",
+    "description": "An original engagement invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f5e5e6",
+    "foreground": "#995c68",
+    "heading": "The Ring Ceremony",
+    "tag": "TWO HEARTS, ONE PROMISE"
+  },
+  {
+    "id": "engagement-7-golden-promise",
+    "name": "Golden Promise",
+    "category": "Engagement",
+    "description": "An original engagement invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f5ebd4",
+    "foreground": "#94713c",
+    "heading": "A Promise of Forever",
+    "tag": "JOIN OUR ENGAGEMENT"
+  },
+  {
+    "id": "engagement-8-sage-love-story",
+    "name": "Sage Love Story",
+    "category": "Engagement",
+    "description": "An original engagement invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e5ece3",
+    "foreground": "#506a56",
+    "heading": "The Beginning of Us",
+    "tag": "SAVE THE DATE"
+  },
+  {
+    "id": "engagement-9-starlight-proposal",
+    "name": "Starlight Proposal",
+    "category": "Engagement",
+    "description": "An original engagement invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#252943",
+    "foreground": "#e8ce91",
+    "heading": "Written in the Stars",
+    "tag": "WE’RE GETTING ENGAGED"
+  },
+  {
+    "id": "engagement-10-peach-petals",
+    "name": "Peach Petals",
+    "category": "Engagement",
+    "description": "An original engagement invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f8e8dd",
+    "foreground": "#a56c56",
+    "heading": "A Beautiful Yes",
+    "tag": "CELEBRATE OUR LOVE"
+  },
+  {
+    "id": "baby-11-woodland-baby",
+    "name": "Woodland Baby",
+    "category": "Baby shower",
+    "description": "An original baby shower invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e9eee2",
+    "foreground": "#60745a",
+    "heading": "A Little One Is Coming",
+    "tag": "BABY SHOWER CELEBRATION"
+  },
+  {
+    "id": "baby-12-teddy-bear-welcome",
+    "name": "Teddy Bear Welcome",
+    "category": "Baby shower",
+    "description": "An original baby shower invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f5eadb",
+    "foreground": "#9a7557",
+    "heading": "Tiny Toes & Teddy Hugs",
+    "tag": "PLEASE JOIN US"
+  },
+  {
+    "id": "baby-13-cloud-nine",
+    "name": "Cloud Nine",
+    "category": "Baby shower",
+    "description": "An original baby shower invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e4edf6",
+    "foreground": "#58758e",
+    "heading": "Over the Moon",
+    "tag": "A SWEET BABY SHOWER"
+  },
+  {
+    "id": "baby-14-pink-blossom-baby",
+    "name": "Pink Blossom Baby",
+    "category": "Baby shower",
+    "description": "An original baby shower invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f6e5eb",
+    "foreground": "#a45f78",
+    "heading": "A Bundle of Joy",
+    "tag": "WELCOME LITTLE ONE"
+  },
+  {
+    "id": "baby-15-little-star-arrival",
+    "name": "Little Star Arrival",
+    "category": "Baby shower",
+    "description": "An original baby shower invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f3edda",
+    "foreground": "#9a824c",
+    "heading": "Twinkle Twinkle",
+    "tag": "A STAR IS ON THE WAY"
+  },
+  {
+    "id": "home-16-terracotta-griha-pravesh",
+    "name": "Terracotta Griha Pravesh",
+    "category": "Housewarming",
+    "description": "An original housewarming invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f1e3d5",
+    "foreground": "#965d3e",
+    "heading": "गृह प्रवेश",
+    "tag": "सपरिवार पधारें"
+  },
+  {
+    "id": "home-17-mango-leaf-welcome",
+    "name": "Mango Leaf Welcome",
+    "category": "Housewarming",
+    "description": "An original housewarming invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e8eddf",
+    "foreground": "#59734d",
+    "heading": "Welcome to Our New Home",
+    "tag": "GRIHA PRAVESH"
+  },
+  {
+    "id": "home-18-modern-home",
+    "name": "Modern Home",
+    "category": "Housewarming",
+    "description": "An original housewarming invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e8e9ee",
+    "foreground": "#5d6578",
+    "heading": "A New Chapter Begins",
+    "tag": "HOUSEWARMING PARTY"
+  },
+  {
+    "id": "home-19-golden-doorway",
+    "name": "Golden Doorway",
+    "category": "Housewarming",
+    "description": "An original housewarming invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f4e9d2",
+    "foreground": "#92703c",
+    "heading": "Open the Door to Joy",
+    "tag": "YOU’RE INVITED"
+  },
+  {
+    "id": "home-20-garden-home",
+    "name": "Garden Home",
+    "category": "Housewarming",
+    "description": "An original housewarming invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e5eee5",
+    "foreground": "#55745b",
+    "heading": "Home Sweet Home",
+    "tag": "LET’S CELEBRATE TOGETHER"
+  },
+  {
+    "id": "festival-21-diwali-diyas",
+    "name": "Diwali Diyas",
+    "category": "Festival",
+    "description": "An original festival invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f7e5c8",
+    "foreground": "#a65324",
+    "heading": "शुभ दीपावली",
+    "tag": "दीपों का पावन पर्व"
+  },
+  {
+    "id": "festival-22-ganesh-utsav",
+    "name": "Ganesh Utsav",
+    "category": "Festival",
+    "description": "An original festival invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f3e4d2",
+    "foreground": "#a45c32",
+    "heading": "गणपति बाप्पा मोरया",
+    "tag": "गणेशोत्सव निमंत्रण"
+  },
+  {
+    "id": "festival-23-navratri-nights",
+    "name": "Navratri Nights",
+    "category": "Festival",
+    "description": "An original festival invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#eee3f1",
+    "foreground": "#76517e",
+    "heading": "शुभ नवरात्रि",
+    "tag": "GARBA • DANCE • CELEBRATION"
+  },
+  {
+    "id": "festival-24-holi-splash",
+    "name": "Holi Splash",
+    "category": "Festival",
+    "description": "An original festival invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#f8e4e3",
+    "foreground": "#a34c5b",
+    "heading": "रंगों का त्योहार",
+    "tag": "HAPPY HOLI"
+  },
+  {
+    "id": "festival-25-christmas-cheer",
+    "name": "Christmas Cheer",
+    "category": "Festival",
+    "description": "An original festival invitation with a coordinated decorative colour palette. Personalise it in the editor.",
+    "background": "#e2ece4",
+    "foreground": "#45664f",
+    "heading": "Merry & Bright",
+    "tag": "A SEASON OF JOY"
+  }
 ];
