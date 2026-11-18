@@ -9,6 +9,7 @@ export type InvitationTemplate = {
   foreground: string;
   heading: string;
   tag: string;
+  style?: string;
 };
 
 export const weddingTemplates: InvitationTemplate[] = [
@@ -511,5 +512,302 @@ export const weddingTemplates: InvitationTemplate[] = [
     "foreground": "#a65b22",
     "heading": "मंगल फेरे",
     "tag": "सादर आमंत्रण"
+  },
+  {
+    "id": "birthday-pastel-balloon-bash",
+    "name": "Pastel Balloon Bash",
+    "category": "Birthday",
+    "description": "Soft pastel balloons and confetti for a joyful birthday celebration.",
+    "background": "#fff0f2",
+    "foreground": "#9a5574",
+    "heading": "Let’s Party!",
+    "tag": "A BIRTHDAY CELEBRATION",
+    "style": "balloons"
+  },
+  {
+    "id": "birthday-midnight-disco",
+    "name": "Midnight Disco",
+    "category": "Birthday",
+    "description": "A bold midnight party look with bright neon-inspired accents.",
+    "background": "#171b35",
+    "foreground": "#f5d56d",
+    "heading": "Birthday After Dark",
+    "tag": "DANCE • LAUGH • CELEBRATE",
+    "style": "disco"
+  },
+  {
+    "id": "birthday-dino-adventure",
+    "name": "Dino Adventure",
+    "category": "Birthday",
+    "description": "A playful jungle-inspired invitation for little explorers.",
+    "background": "#e9f0d8",
+    "foreground": "#476c42",
+    "heading": "Roar! It’s Party Time",
+    "tag": "YOU’RE INVITED",
+    "style": "jungle"
+  },
+  {
+    "id": "birthday-rainbow-sprinkle",
+    "name": "Rainbow Sprinkle",
+    "category": "Birthday",
+    "description": "Colourful rainbow tones and playful confetti for a cheerful party.",
+    "background": "#fff4df",
+    "foreground": "#b85d63",
+    "heading": "A Little More Fun",
+    "tag": "COME CELEBRATE",
+    "style": "rainbow"
+  },
+  {
+    "id": "birthday-elegant-champagne",
+    "name": "Elegant Champagne",
+    "category": "Birthday",
+    "description": "A refined champagne and gold design for milestone birthdays.",
+    "background": "#f5eadb",
+    "foreground": "#987345",
+    "heading": "A Toast to You",
+    "tag": "PLEASE JOIN THE CELEBRATION",
+    "style": "elegant"
+  },
+  {
+    "id": "engagement-rose-garden-promise",
+    "name": "Rose Garden Promise",
+    "category": "Engagement",
+    "description": "Romantic rose tones and botanical details for an engagement celebration.",
+    "background": "#f5e4e5",
+    "foreground": "#965565",
+    "heading": "The Yes Day",
+    "tag": "OUR ENGAGEMENT",
+    "style": "floral"
+  },
+  {
+    "id": "engagement-sapphire-soiree",
+    "name": "Sapphire Soiree",
+    "category": "Engagement",
+    "description": "Deep blue and silver styling for an elegant evening celebration.",
+    "background": "#e5eaf3",
+    "foreground": "#435b84",
+    "heading": "A Perfect Match",
+    "tag": "ENGAGEMENT CELEBRATION",
+    "style": "classic"
+  },
+  {
+    "id": "engagement-modern-love-story",
+    "name": "Modern Love Story",
+    "category": "Engagement",
+    "description": "Minimal editorial typography with warm neutral colours.",
+    "background": "#f1eee8",
+    "foreground": "#62584f",
+    "heading": "The Next Chapter",
+    "tag": "SAVE THE DATE",
+    "style": "minimal"
+  },
+  {
+    "id": "engagement-mehendi-magic",
+    "name": "Mehendi Magic",
+    "category": "Engagement",
+    "description": "Festive Indian-inspired colours for a joyful ring ceremony.",
+    "background": "#f4e7d4",
+    "foreground": "#9c5a31",
+    "heading": "Roka Ceremony",
+    "tag": "WITH LOVE AND BLESSINGS",
+    "style": "indian"
+  },
+  {
+    "id": "engagement-moonlit-vows",
+    "name": "Moonlit Vows",
+    "category": "Engagement",
+    "description": "A dreamy night-sky palette with delicate celestial accents.",
+    "background": "#e8e8f2",
+    "foreground": "#55577f",
+    "heading": "Written in the Stars",
+    "tag": "JOIN OUR CELEBRATION",
+    "style": "celestial"
+  },
+  {
+    "id": "baby-shower-woodland-baby",
+    "name": "Woodland Baby",
+    "category": "Baby shower",
+    "description": "Cute woodland-inspired styling in gentle sage and cream.",
+    "background": "#edf0e4",
+    "foreground": "#607354",
+    "heading": "Oh Baby!",
+    "tag": "A LITTLE ONE IS ON THE WAY",
+    "style": "woodland"
+  },
+  {
+    "id": "baby-shower-teddy-bear-picnic",
+    "name": "Teddy Bear Picnic",
+    "category": "Baby shower",
+    "description": "Warm teddy-bear tones for a sweet and welcoming baby shower.",
+    "background": "#f4e7d8",
+    "foreground": "#9a7158",
+    "heading": "A Tiny Celebration",
+    "tag": "BABY SHOWER",
+    "style": "teddy"
+  },
+  {
+    "id": "baby-shower-blue-skies-ahead",
+    "name": "Blue Skies Ahead",
+    "category": "Baby shower",
+    "description": "Airy blue clouds and soft colours for a baby shower.",
+    "background": "#e7f1f7",
+    "foreground": "#557d9b",
+    "heading": "A Baby Is Brewing",
+    "tag": "PLEASE JOIN US",
+    "style": "clouds"
+  },
+  {
+    "id": "baby-shower-little-wildflower",
+    "name": "Little Wildflower",
+    "category": "Baby shower",
+    "description": "Watercolour-inspired wildflower styling in soft blush tones.",
+    "background": "#f6e9e8",
+    "foreground": "#9a6472",
+    "heading": "A Sweet Little Bloom",
+    "tag": "BABY SHOWER BRUNCH",
+    "style": "floral"
+  },
+  {
+    "id": "baby-shower-twinkle-twinkle",
+    "name": "Twinkle Twinkle",
+    "category": "Baby shower",
+    "description": "A celestial moon-and-stars design for a magical celebration.",
+    "background": "#ece8f4",
+    "foreground": "#6f628e",
+    "heading": "Twinkle Twinkle",
+    "tag": "A STAR IS ON THE WAY",
+    "style": "celestial"
+  },
+  {
+    "id": "housewarming-terracotta-home",
+    "name": "Terracotta Home",
+    "category": "Housewarming",
+    "description": "Warm terracotta and earthy tones for a new-home celebration.",
+    "background": "#f1e1d5",
+    "foreground": "#995c43",
+    "heading": "New Home, New Memories",
+    "tag": "HOUSEWARMING PARTY",
+    "style": "home"
+  },
+  {
+    "id": "housewarming-olive-branch",
+    "name": "Olive Branch",
+    "category": "Housewarming",
+    "description": "A calm olive and ivory botanical design for a house blessing.",
+    "background": "#e9eee4",
+    "foreground": "#65734e",
+    "heading": "Bless This Home",
+    "tag": "GRAND OPENING OF OUR HOME",
+    "style": "botanical"
+  },
+  {
+    "id": "housewarming-griha-pravesh",
+    "name": "Griha Pravesh",
+    "category": "Housewarming",
+    "description": "Traditional Indian styling for a griha pravesh and vastu puja.",
+    "background": "#f6e8d0",
+    "foreground": "#a05b28",
+    "heading": "गृह प्रवेश",
+    "tag": "सपरिवार पधारें",
+    "style": "indian"
+  },
+  {
+    "id": "festival-diya-glow",
+    "name": "Diya Glow",
+    "category": "Festival",
+    "description": "Glowing diya-inspired colours for Diwali and festive gatherings.",
+    "background": "#f7e4c8",
+    "foreground": "#9e5424",
+    "heading": "दीपावली मिलन",
+    "tag": "स्नेह निमंत्रण",
+    "style": "diya"
+  },
+  {
+    "id": "festival-holi-splash",
+    "name": "Holi Splash",
+    "category": "Festival",
+    "description": "Bright playful colours for a Holi party and rang celebration.",
+    "background": "#f7e5eb",
+    "foreground": "#a44769",
+    "heading": "रंग बरसे!",
+    "tag": "HOLI CELEBRATION",
+    "style": "holi"
+  },
+  {
+    "id": "festival-ganesh-utsav",
+    "name": "Ganesh Utsav",
+    "category": "Festival",
+    "description": "Traditional saffron and marigold styling for Ganesh celebrations.",
+    "background": "#f5e6cc",
+    "foreground": "#a55d24",
+    "heading": "गणपति बाप्पा मोरया",
+    "tag": "आरती एवं प्रसाद",
+    "style": "indian"
+  },
+  {
+    "id": "anniversary-golden-years",
+    "name": "Golden Years",
+    "category": "Anniversary",
+    "description": "Classic gold and ivory styling for an anniversary celebration.",
+    "background": "#f4edda",
+    "foreground": "#92713c",
+    "heading": "Still in Love",
+    "tag": "CELEBRATING ANOTHER YEAR",
+    "style": "elegant"
+  },
+  {
+    "id": "anniversary-silver-jubilee",
+    "name": "Silver Jubilee",
+    "category": "Anniversary",
+    "description": "A polished silver palette for a 25th anniversary celebration.",
+    "background": "#eaedf0",
+    "foreground": "#626e7b",
+    "heading": "25 Years Together",
+    "tag": "SILVER JUBILEE",
+    "style": "classic"
+  },
+  {
+    "id": "puja-satyanarayan-puja",
+    "name": "Satyanarayan Puja",
+    "category": "Puja",
+    "description": "A traditional devotional invitation in auspicious saffron tones.",
+    "background": "#f7e8d0",
+    "foreground": "#9c5928",
+    "heading": "श्री सत्यनारायण पूजा",
+    "tag": "सपरिवार आमंत्रित",
+    "style": "indian"
+  },
+  {
+    "id": "puja-namkaran-sanskar",
+    "name": "Namkaran Sanskar",
+    "category": "Puja",
+    "description": "A gentle traditional design for a baby's naming ceremony.",
+    "background": "#f4e8df",
+    "foreground": "#98654e",
+    "heading": "नामकरण संस्कार",
+    "tag": "शुभ अवसर पर पधारें",
+    "style": "indian"
+  },
+  {
+    "id": "graduation-the-next-chapter",
+    "name": "The Next Chapter",
+    "category": "Graduation",
+    "description": "A modern navy-and-gold invitation to celebrate a big achievement.",
+    "background": "#e7eaf0",
+    "foreground": "#465777",
+    "heading": "The Future Starts Now",
+    "tag": "GRADUATION CELEBRATION",
+    "style": "classic"
+  },
+  {
+    "id": "corporate-modern-conference",
+    "name": "Modern Conference",
+    "category": "Corporate",
+    "description": "A clean professional layout for conferences and business events.",
+    "background": "#e8eef2",
+    "foreground": "#36596b",
+    "heading": "You’re Invited",
+    "tag": "AN EVENING OF IDEAS",
+    "style": "minimal"
   }
 ];
