@@ -5,8 +5,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum TemplateStatus { DRAFT PUBLISHED ARCHIVED }
-enum Occasion { WEDDING BIRTHDAY ENGAGEMENT BABY_SHOWER HOUSEWARMING NAMING_CEREMONY OTHER }
+
+enum TemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Occasion {
+  WEDDING
+  BIRTHDAY
+  ENGAGEMENT
+  BABY_SHOWER
+  HOUSEWARMING
+  NAMING_CEREMONY
+  OTHER
+}
+
 model Template {
   id          String         @id @default(cuid())
   slug        String         @unique
