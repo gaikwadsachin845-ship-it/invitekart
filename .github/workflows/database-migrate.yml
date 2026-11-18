@@ -7,8 +7,10 @@ jobs:
   migrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out invitation templates branch
         uses: actions/checkout@v4
+        with:
+          ref: feature/invitation-templates
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
