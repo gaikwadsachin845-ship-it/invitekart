@@ -18,7 +18,7 @@ const occasionNames: Record<string, string> = { WEDDING: "Wedding", BIRTHDAY: "B
 export default function TemplatesPage() {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
-  const [customTemplates, setCustomTemplates] = useState<GalleryTemplate[]>([]);
+  const [customTemplates, setCustomTemplates] = useState<GalleryTemplate[]>([]);\n  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     fetch("/api/templates").then(r => r.ok ? r.json() : { templates: [] }).then(data => {
       const mapped = (data.templates || []).map((item: { id: string; title: string; description: string | null; occasion: string; previewUrl: string; designJson: { heading?: string; tag?: string; background?: string; foreground?: string } }) => ({
@@ -40,7 +40,7 @@ export default function TemplatesPage() {
     <main style={{ minHeight: "100vh", background: "#faf7f2", color: "#302923", fontFamily: "Arial, sans-serif" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, padding: "18px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4" }}>
         <a href="/" style={{ color: "#302923", textDecoration: "none", fontFamily: "Georgia,serif", fontSize: 26, fontWeight: 700 }}>InviteKart<span style={{ color: "#8d3f4b" }}>.</span></a>
-        <a href="/editor" style={{ color: "#8d3f4b", fontWeight: 700, textDecoration: "none" }}>Open advanced editor →</a>
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>{isAdmin && <a href="/admin/templates" style={{ color: "#8d3f4b", fontWeight: 700, textDecoration: "none" }}>Manage templates</a>}<a href="/editor" style={{ color: "#8d3f4b", fontWeight: 700, textDecoration: "none" }}>Open advanced editor →</a></div>
       </header>
       <section style={{ maxWidth: 1180, margin: "0 auto", padding: "48px 22px 24px" }}>
         <div style={{ color: "#8d3f4b", letterSpacing: 2, fontSize: 11, fontWeight: 700 }}>A DESIGN FOR EVERY OCCASION</div>
