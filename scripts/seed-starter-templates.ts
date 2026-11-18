@@ -66,6 +66,13 @@ const starters: Starter[] = [
   { slug:"baby-naming-en", title:"Baby Naming Celebration", category:"Naming ceremony", language:"en", description:"A soft cloud-and-star baby naming invitation in powder blue.", heading:"A Name to Cherish", tag:"NAMING CEREMONY", background:"#e6eff5", foreground:"#425a70", accent:"#c8a16b", motif:"stars" },
   { slug:"wedding-anniversary-hi", title:"विवाह वर्षगांठ", category:"Anniversary", language:"hi", description:"A warm traditional anniversary invitation in burgundy and antique gold.", heading:"विवाह वर्षगांठ", tag:"सस्नेह आमंत्रण", background:"#5a2435", foreground:"#fff0d4", accent:"#d9b66f", motif:"rings" },
 
+  // Five original Marathi wedding invitation styles inspired by the reference category.
+  { slug:"marathi-lagna-patrika-classic", title:"मराठी लग्नपत्रिका", category:"Wedding", language:"mr", description:"पिवळ्या, पांढऱ्या आणि हिरव्या रंगछटांमध्ये गणेश प्रतिमेची पारंपरिक लग्नपत्रिका.", heading:"शुभ विवाह", tag:"॥ श्री गणेशाय नमः ॥", background:"#f7efc9", foreground:"#486044", accent:"#c28a32", motif:"ganesh" },
+  { slug:"marathi-royal-red-wedding", title:"रॉयल मराठी विवाह", category:"Wedding", language:"mr", description:"लाल आणि सोनेरी रंगसंगतीतील भव्य, राजेशाही मराठी विवाह आमंत्रण.", heading:"शुभविवाह", tag:"मंगलमय विवाह सोहळा", background:"#651b2b", foreground:"#fff0d2", accent:"#e0b85f", motif:"mandala" },
+  { slug:"marathi-floral-wedding-card", title:"फुलांची मराठी लग्नपत्रिका", category:"Wedding", language:"mr", description:"नाजूक फुलांच्या नक्षीसह क्रीम आणि गुलाबी रंगातील आधुनिक मराठी लग्नपत्रिका.", heading:"आमंत्रण", tag:"आपली उपस्थिती प्रार्थनीय", background:"#f5e8df", foreground:"#704858", accent:"#c58a91", motif:"floral" },
+  { slug:"marathi-classic-marriage-invitation", title:"पारंपरिक विवाह निमंत्रण", category:"Wedding", language:"mr", description:"मंगल कलश आणि केशरी-सोनरी रंगछटांसह पारंपरिक मराठी विवाह निमंत्रण.", heading:"मंगल विवाह सोहळा", tag:"सस्नेह निमंत्रण", background:"#f7e6c9", foreground:"#754329", accent:"#cc8b3d", motif:"kalash" },
+  { slug:"marathi-royal-lagna-patrika", title:"रॉयल लग्नपत्रिका", category:"Wedding", language:"mr", description:"गडद हिरव्या आणि सोनरी रंगातील देखणी राजेशाही मराठी लग्नपत्रिका.", heading:"शुभमंगल", tag:"॥ श्री गणेश ॥", background:"#203f35", foreground:"#fff0cf", accent:"#d7b66d", motif:"mandala" },
+
 ];
 
 const occasionMap: Record<string, Occasion> = {
