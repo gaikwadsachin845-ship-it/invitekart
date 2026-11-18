@@ -43,7 +43,7 @@ export default function SharedInvitationPage() {
       active = false;
       instance?.dispose();
     };
-  }, [params.shareId]);
+  }, [shareId]);
 
   return (
     <main style={{ minHeight: "100vh", background: "#faf7f2", color: "#302923", fontFamily: "Arial, sans-serif", padding: "28px 16px 50px" }}>
