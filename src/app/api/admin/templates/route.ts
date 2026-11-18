@@ -33,6 +33,12 @@ export async function GET() {
   return NextResponse.json({ templates });
 }
 
+export async function DELETE() {
+  if (!(await requireAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const result = await prisma.template.deleteMany({});
+  return NextResponse.json({ ok: true, deleted: result.count });
+}
+
 export async function POST(request: Request) {
   if (!(await requireAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const parsed = schema.safeParse(await request.json().catch(() => null));
