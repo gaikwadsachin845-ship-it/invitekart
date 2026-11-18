@@ -107,7 +107,8 @@ export default function EditorPage() {
           left: 22, top: 22, width: 376, height: 516, fill: "transparent",
           stroke: "#b78e70", strokeWidth: 1, selectable: false, evented: false,
         });
-        const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
+        const motif = chosen?.style === "indian" ? "✥   ॐ   ✥" : chosen?.style === "celestial" ? "☾   ✧   ☆" : chosen?.style === "floral" || chosen?.style === "botanical" ? "❀   ❧   ❀" : chosen?.style === "diya" ? "🪔   ✦   🪔" : chosen?.style === "balloons" ? "○   ◌   ○" : chosen?.style === "jungle" || chosen?.style === "woodland" ? "❧   ♧   ❧" : "✦   ❧   ✦";
+        const ornament = new fabric.Text(chosen?.tag || motif, {
           left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
           fill: canvasText, selectable: false, evented: false,
         });
