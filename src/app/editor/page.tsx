@@ -31,7 +31,7 @@ export default function EditorPage() {
       instance = new fabric.Canvas(elementRef.current, {
         width: 420,
         height: 560,
-        backgroundColor: background,
+        backgroundColor: canvasBackground,
         preserveObjectStacking: true,
         selection: true,
       }) as unknown as FabricCanvas;
@@ -42,24 +42,24 @@ export default function EditorPage() {
         fill: "transparent", stroke: "#b78e70", strokeWidth: 1,
         selectable: false, evented: false,
       });
-      const ornament = new fabric.Text("✦   ❧   ✦", {
+      const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
         left: 210, top: 105, originX: "center", fontSize: 26,
-        fill: "#a77b54", selectable: false, evented: false,
+        fill: canvasText, selectable: false, evented: false, fontSize: chosen ? 13 : 26,
       });
-      const heading = new fabric.Textbox("You’re Invited", {
+      const heading = new fabric.Textbox(chosen?.heading || "You’re Invited", {
         left: 210, top: 175, originX: "center", width: 330,
         textAlign: "center", fontFamily: "Georgia", fontSize: 38,
-        fill: "#754c47", fontWeight: "bold",
+        fill: canvasText, fontWeight: "bold",
       });
       const details = new fabric.Textbox("Together with our families\nwe invite you to celebrate\nour special day", {
         left: 210, top: 265, originX: "center", width: 320,
         textAlign: "center", fontFamily: "Georgia", fontSize: 19,
-        lineHeight: 1.5, fill: "#754c47",
+        lineHeight: 1.5, fill: canvasText,
       });
       const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\nThe Grand Celebration, Pune", {
         left: 210, top: 405, originX: "center", width: 330,
         textAlign: "center", fontFamily: "Arial", fontSize: 15,
-        lineHeight: 1.6, fill: "#754c47",
+        lineHeight: 1.6, fill: canvasText,
       });
       instance.add(frame, ornament, heading, details, footer);
       instance.renderAll();
