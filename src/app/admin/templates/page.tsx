@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const categories = ["Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Festival"];
-type Row = { id: string; title: string; slug: string; description: string | null; occasion: string; language: string; previewUrl: string; status: string; designJson: { heading?: string; tag?: string; background?: string; foreground?: string } };
+const categories = ["Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Puja", "Anniversary", "Graduation", "Corporate", "Festival"];
+type Row = { id: string; title: string; slug: string; description: string | null; occasion: string; language: string; previewUrl: string; status: string; designJson: { category?: string; heading?: string; tag?: string; background?: string; foreground?: string } };
 type Draft = { title: string; slug: string; description: string; category: string; language: string; previewUrl: string; heading: string; tag: string; background: string; foreground: string; status: "DRAFT" | "PUBLISHED" };
 const empty: Draft = { title: "", slug: "", description: "", category: "Wedding", language: "en", previewUrl: "", heading: "You’re Invited", tag: "", background: "#f5e9df", foreground: "#754c47", status: "DRAFT" };
 const field: React.CSSProperties = { width: "100%", boxSizing: "border-box", padding: 10, border: "1px solid #e5d9ce", borderRadius: 4, background: "white" };
@@ -34,7 +34,7 @@ export default function AdminTemplatesPage() {
   }
   function edit(item: Row) {
     const d = item.designJson || {};
-    const category = item.occasion === "BABY_SHOWER" ? "Baby shower" : item.occasion === "HOUSEWARMING" ? "Housewarming" : item.occasion === "OTHER" ? "Festival" : item.occasion[0] + item.occasion.slice(1).toLowerCase();
+    const category = d.category || (item.occasion === "BABY_SHOWER" ? "Baby shower" : item.occasion === "HOUSEWARMING" ? "Housewarming" : item.occasion === "NAMING_CEREMONY" ? "Naming ceremony" : item.occasion === "OTHER" ? "Festival" : item.occasion[0] + item.occasion.slice(1).toLowerCase());
     setDraft({ title: item.title, slug: item.slug, description: item.description || "", category, language: item.language, previewUrl: item.previewUrl, heading: d.heading || item.title, tag: d.tag || "", background: d.background || "#f5e9df", foreground: d.foreground || "#754c47", status: item.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT" });
     setEditing(item.id); setMessage(""); window.scrollTo({ top: 0, behavior: "smooth" });
   }
