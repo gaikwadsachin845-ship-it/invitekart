@@ -15,7 +15,7 @@ const schema = z.object({
   tag: z.string().trim().max(120).default(""),
   background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   foreground: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  weddingText: z.string().max(12000).optional().default(""),\n  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
 });
 
 const occasionMap: Record<string, Occasion> = {
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         language: value.language,
         previewUrl: value.previewUrl,
         status: value.status as TemplateStatus,
-        designJson: { category: value.category, heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground } as Prisma.InputJsonValue,
+        designJson: { category: value.category, heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground, weddingFields: value.category === "Wedding" ? value.weddingText.split("\\n").map((line) => { const divider = line.indexOf("|"); return { label: divider >= 0 ? line.slice(0, divider).trim() : "Invitation text", text: divider >= 0 ? line.slice(divider + 1).trim() : line.trim() }; }).filter((field) => field.text).slice(0, 20) : [] } as Prisma.InputJsonValue,
         isFree: true,
       },
     });
