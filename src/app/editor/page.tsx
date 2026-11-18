@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { weddingTemplates } from "@/lib/wedding-templates";
 
 type FabricCanvas = {
   add: (...objects: unknown[]) => void;
@@ -11,6 +12,7 @@ type FabricCanvas = {
   toDataURL: (options: { format: string; multiplier: number }) => string;
   setBackgroundColor: (color: string, callback?: () => void) => void;
   dispose: () => void;
+  toJSON: () => Record<string, unknown>;
 };
 
 export default function EditorPage() {
@@ -20,18 +22,37 @@ export default function EditorPage() {
   const [background, setBackground] = useState("#f5e9df");
   const [textColor, setTextColor] = useState("#754c47");
   const [status, setStatus] = useState("Your design is ready to edit");
+  const [fontFamily, setFontFamily] = useState("Georgia");
+  const [fontSize, setFontSize] = useState(24);
+  const [bold, setBold] = useState(false);
+  const [alignment, setAlignment] = useState("center");
 
   useEffect(() => {
     let active = true;
     let instance: FabricCanvas | null = null;
 
     async function setup() {
+      const presets: Record<string, { background: string; foreground: string; heading: string; tag: string }> = {
+        "blush-wedding": { background: "#f2e4df", foreground: "#8a4b50", heading: "Together Forever", tag: "A CELEBRATION OF LOVE" },
+        "royal-wedding": { background: "#eee4cf", foreground: "#8a6a34", heading: "शुभ विवाह", tag: "आप सादर आमंत्रित हैं" },
+        "garden-birthday": { background: "#e9eadc", foreground: "#52664e", heading: "Let’s Celebrate!", tag: "YOU’RE INVITED TO A BIRTHDAY" },
+        "confetti-birthday": { background: "#f8e8d2", foreground: "#a65d3b", heading: "Make a Wish!", tag: "BIRTHDAY PARTY" },
+        "minimal-engagement": { background: "#e5e8ed", foreground: "#53647a", heading: "The Beginning", tag: "JOIN OUR ENGAGEMENT" },
+        "floral-baby": { background: "#f5e7e8", foreground: "#a45e76", heading: "A Little One Is On The Way", tag: "BABY SHOWER" },
+        "housewarming": { background: "#eee6d9", foreground: "#78634b", heading: "Home Sweet Home", tag: "PLEASE JOIN OUR HOUSEWARMING" },
+        "diwali": { background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
+      };
+      const templateId = new URLSearchParams(window.location.search).get("template") || "";
+      const chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
+      const canvasBackground = chosen?.background || background;
+      const canvasText = chosen?.foreground || textColor;
+      if (chosen) { setBackground(chosen.background); setTextColor(chosen.foreground); }
       const fabric = await import("fabric");
       if (!active || !elementRef.current) return;
       instance = new fabric.Canvas(elementRef.current, {
         width: 420,
         height: 560,
-        backgroundColor: background,
+        backgroundColor: canvasBackground,
         preserveObjectStacking: true,
         selection: true,
       }) as unknown as FabricCanvas;
@@ -42,24 +63,24 @@ export default function EditorPage() {
         fill: "transparent", stroke: "#b78e70", strokeWidth: 1,
         selectable: false, evented: false,
       });
-      const ornament = new fabric.Text("✦   ❧   ✦", {
-        left: 210, top: 105, originX: "center", fontSize: 26,
-        fill: "#a77b54", selectable: false, evented: false,
+      const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
+        left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
+        fill: canvasText, selectable: false, evented: false,
       });
-      const heading = new fabric.Textbox("You’re Invited", {
+      const heading = new fabric.Textbox(chosen?.heading || "You’re Invited", {
         left: 210, top: 175, originX: "center", width: 330,
         textAlign: "center", fontFamily: "Georgia", fontSize: 38,
-        fill: "#754c47", fontWeight: "bold",
+        fill: canvasText, fontWeight: "bold",
       });
       const details = new fabric.Textbox("Together with our families\nwe invite you to celebrate\nour special day", {
         left: 210, top: 265, originX: "center", width: 320,
         textAlign: "center", fontFamily: "Georgia", fontSize: 19,
-        lineHeight: 1.5, fill: "#754c47",
+        lineHeight: 1.5, fill: canvasText,
       });
       const footer = new fabric.Textbox("21 February 2027  ·  6:30 PM\nThe Grand Celebration, Pune", {
         left: 210, top: 405, originX: "center", width: 330,
         textAlign: "center", fontFamily: "Arial", fontSize: 15,
-        lineHeight: 1.6, fill: "#754c47",
+        lineHeight: 1.6, fill: canvasText,
       });
       instance.add(frame, ornament, heading, details, footer);
       instance.renderAll();
@@ -144,6 +165,71 @@ export default function EditorPage() {
     canvas?.renderAll();
   }
 
+  function changeFontSize(value: number) {
+    setFontSize(value);
+    const canvas = canvasRef.current;
+    const selected = canvas?.getActiveObject() as {
+      type?: string;
+      set?: (value: object) => void;
+      initDimensions?: () => void;
+      setCoords?: () => void;
+    } | undefined;
+    if (selected && ["textbox", "text", "i-text"].includes(selected.type || "")) {
+      selected.set?.({ fontSize: value });
+      selected.initDimensions?.();
+      selected.setCoords?.();
+      canvas?.renderAll();
+    }
+  }
+
+  function applyTextSettings() {
+    const canvas = canvasRef.current;
+    const selected = canvas?.getActiveObject() as {
+      type?: string;
+      set?: (value: object) => void;
+      initDimensions?: () => void;
+      setCoords?: () => void;
+    } | undefined;
+    if (!selected || !["textbox", "text", "i-text"].includes(selected.type || "")) {
+      setStatus("Select a text item on the invitation first");
+      return;
+    }
+    selected.set?.({
+      fontFamily,
+      fontSize,
+      fontWeight: bold ? "bold" : "normal",
+      textAlign: alignment,
+    });
+    selected.initDimensions?.();
+    selected.setCoords?.();
+    canvas?.renderAll();
+    setStatus("Text formatting updated");
+  }
+
+  async function saveAndShare() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    setStatus("Saving your invitation…");
+    try {
+      const response = await fetch("/api/invitations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "My InviteKart invitation",
+          language: "en",
+          designJson: canvas.toJSON(),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not save invitation");
+      const shareUrl = `${window.location.origin}/invite/${result.shareId}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setStatus("Saved! Share link copied to your clipboard.");
+    } catch {
+      setStatus("Could not save or copy the link. Please check your connection and try again.");
+    }
+  }
+
   function downloadPng() {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -161,7 +247,7 @@ export default function EditorPage() {
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 5vw", background: "#fffdfa", borderBottom: "1px solid #eadfd4" }}>
         <a href="/" style={{ color: "#302923", textDecoration: "none", fontFamily: "Georgia, serif", fontSize: 25, fontWeight: 700 }}>InviteKart<span style={{ color: "#8d3f4b" }}>.</span></a>
         <div style={{ fontSize: 13, color: "#81776e" }}>Invitation Studio</div>
-        <button onClick={downloadPng} disabled={!ready} style={primaryButton}>Download PNG ↓</button>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}><button onClick={saveAndShare} disabled={!ready} style={secondaryButton}>Save & share ↗</button><button onClick={downloadPng} disabled={!ready} style={primaryButton}>Download PNG ↓</button></div>
       </header>
 
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "30px 20px" }}>
@@ -199,6 +285,20 @@ export default function EditorPage() {
             <input aria-label="Background color" type="color" value={background} onChange={e => changeBackground(e.target.value)} style={colorInput} />
             <label style={fieldLabel}>TEXT / OBJECT COLOR</label>
             <input aria-label="Text color" type="color" value={textColor} onChange={e => changeTextColor(e.target.value)} style={colorInput} />
+            <label style={fieldLabel}>FONT FAMILY</label>
+            <select aria-label="Font family" value={fontFamily} onChange={e => setFontFamily(e.target.value)} style={selectInput}>
+              <option>Georgia</option><option>Arial</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option>
+            </select>
+            <label style={fieldLabel}>FONT SIZE · {fontSize}px</label>
+            <input aria-label="Font size" type="range" min="10" max="64" value={fontSize} onChange={e => changeFontSize(Number(e.target.value))} style={{ width: "100%" }} />
+            <label style={{ ...toolButton, display: "flex", alignItems: "center", gap: 8 }}>
+              <input type="checkbox" checked={bold} onChange={e => setBold(e.target.checked)} /> Bold text
+            </label>
+            <label style={fieldLabel}>TEXT ALIGNMENT</label>
+            <select aria-label="Text alignment" value={alignment} onChange={e => setAlignment(e.target.value)} style={selectInput}>
+              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
+            </select>
+            <button style={toolButton} onClick={applyTextSettings}>Apply text formatting</button>
             <div style={{ borderTop: "1px solid #eee5dc", margin: "18px 0" }} />
             <h3 style={panelHeading}>Coming next</h3>
             <ul style={{ paddingLeft: 18, color: "#81776e", fontSize: 12, lineHeight: 1.9 }}>
@@ -217,9 +317,11 @@ export default function EditorPage() {
   );
 }
 
+const secondaryButton: React.CSSProperties = { border: "1px solid #8d3f4b", background: "white", color: "#8d3f4b", padding: "12px 15px", borderRadius: 4, fontWeight: 700, cursor: "pointer" };
 const primaryButton: React.CSSProperties = { border: 0, background: "#8d3f4b", color: "white", padding: "12px 17px", borderRadius: 4, fontWeight: 700, cursor: "pointer" };
 const panelStyle: React.CSSProperties = { background: "#fffdfa", border: "1px solid #eee5dc", borderRadius: 7, padding: 18 };
 const panelHeading: React.CSSProperties = { fontFamily: "Georgia, serif", fontSize: 18, margin: "0 0 15px" };
 const toolButton: React.CSSProperties = { width: "100%", display: "block", margin: "9px 0", padding: "11px 12px", textAlign: "left", border: "1px solid #e8ded4", background: "#fff", borderRadius: 4, color: "#403832", cursor: "pointer", fontSize: 13 };
 const fieldLabel: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, color: "#6e655d", margin: "13px 0 7px" };
 const colorInput: React.CSSProperties = { width: "100%", height: 42, border: "1px solid #e8ded4", background: "white", padding: 4, borderRadius: 4 };
+const selectInput: React.CSSProperties = { width: "100%", padding: 10, border: "1px solid #e8ded4", background: "white", borderRadius: 4, color: "#403832" };
