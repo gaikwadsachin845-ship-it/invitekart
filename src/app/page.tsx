@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { languages, LanguageCode } from "@/lib/i18n";
 
-type Template = { id:string; slug:string; title:string; description:string|null; occasion:string; language:string; previewUrl:string; isFree:boolean };
+type Template = { id:string; slug:string; title:string; description:string|null; occasion:string; category?:string; language:string; previewUrl:string; isFree:boolean };
 const occasions = [
   { name:"Wedding", icon:"💍", text:"Wedding invitations" },
   { name:"Birthday", icon:"🎂", text:"Birthday celebrations" },
@@ -17,14 +17,14 @@ const occasions = [
   { name:"Corporate", icon:"✉️", text:"Business events" },
   { name:"Festival", icon:"🎉", text:"Festivals & get-togethers" },
 ];
-const categoryValue:Record<string,string> = { Wedding:"WEDDING", Birthday:"BIRTHDAY", Engagement:"ENGAGEMENT", "Baby shower":"BABY_SHOWER", Housewarming:"HOUSEWARMING", Puja:"OTHER", "Naming ceremony":"NAMING_CEREMONY", Anniversary:"OTHER", Graduation:"OTHER", Corporate:"OTHER", Festival:"OTHER" };
+const categoryValue:Record<string,string> = { Wedding:"Wedding", Birthday:"Birthday", Engagement:"Engagement", "Baby shower":"Baby shower", Housewarming:"Housewarming", Puja:"Puja", "Naming ceremony":"Naming ceremony", Anniversary:"Anniversary", Graduation:"Graduation", Corporate:"Corporate", Festival:"Festival" };
 export default function Home() {
   const [templates,setTemplates]=useState<Template[]>([]);
   const [search,setSearch]=useState("");
   const [language,setLanguage]=useState<LanguageCode>("en");
   const [active,setActive]=useState("All");
   useEffect(()=>{fetch("/api/templates?language="+language).then(r=>r.ok?r.json():{templates:[]}).then(d=>setTemplates(d.templates||[])).catch(()=>setTemplates([]));},[language]);
-  const filtered=useMemo(()=>templates.filter(t=>(active==="All"||t.occasion===categoryValue[active])&&(t.title.toLowerCase().includes(search.toLowerCase())||(t.description||"").toLowerCase().includes(search.toLowerCase()))),[templates,active,search]);
+  const filtered=useMemo(()=>templates.filter(t=>(active==="All"||(t.category||t.occasion)===categoryValue[active])&&(t.title.toLowerCase().includes(search.toLowerCase())||(t.description||"").toLowerCase().includes(search.toLowerCase()))),[templates,active,search]);
   return <main>
     <div className="top">MADE WITH LOVE IN INDIA · FREE DIGITAL INVITATIONS</div>
     <nav className="nav"><a className="brand" href="/">InviteKart<span>.</span></a><div className="navlinks"><a href="#occasions">Occasions</a><a href="/templates">Templates</a><a href="/editor">Invitation editor</a></div><div className="nav-actions"><select aria-label="Choose language" value={language} onChange={e=>setLanguage(e.target.value as LanguageCode)}>{languages.map(l=><option key={l.code} value={l.code}>{l.label}</option>)}</select><a className="btn" href="/templates">Create invitation ↗</a></div></nav>
@@ -37,7 +37,7 @@ export default function Home() {
     </section>
     <section className="featured-section" id="occasions"><div className="section-heading"><div><div className="eyebrow">THE INVITEKART COLLECTION</div><h2>Find a design that feels like you</h2><p>Explore our latest invitation designs, ready for your personal touch.</p></div><a className="text-link" href="/templates">View all designs →</a></div>
       <div className="template-tools"><div className="search-box"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search invitation designs..." aria-label="Search invitation designs"/></div><span className="template-count">{filtered.length} designs</span></div>
-      <div className="home-template-grid">{filtered.slice(0,8).map(t=><a className="home-template-card" href={"/editor?template="+encodeURIComponent(t.slug||t.id)} key={t.id}><div className="home-template-image"><img src={t.previewUrl} alt={t.title}/><span>{t.isFree?"FREE":"PREMIUM"}</span></div><b>{t.title}</b><small>{t.occasion.replaceAll("_"," ")}</small></a>)}</div>
+      <div className="home-template-grid">{filtered.slice(0,8).map(t=><a className="home-template-card" href={"/editor?template="+encodeURIComponent(t.slug||t.id)} key={t.id}><div className="home-template-image"><img src={t.previewUrl} alt={t.title}/><span>{t.isFree?"FREE":"PREMIUM"}</span></div><b>{t.title}</b><small>{t.(t.category||t.occasion).replaceAll("_"," ")}</small></a>)}</div>
       {filtered.length===0&&<div className="empty-templates"><div>✧</div><h3>Fresh designs are on their way</h3><p>Our new collection is being prepared. Check back soon, or create a custom invitation in the editor.</p><a className="btn" href="/editor">Open invitation maker</a></div>}
     </section>
     <section className="language-band"><div><div className="eyebrow">SAY IT IN YOUR LANGUAGE</div><h2>Your words. Your culture. Your celebration.</h2><p>Create invitations in English, Hindi, Marathi, Kannada, Tamil and Telugu.</p></div><div className="language-chips">{languages.map(l=><button key={l.code} onClick={()=>{setLanguage(l.code);document.getElementById("occasions")?.scrollIntoView({behavior:"smooth"});}}>{l.label}</button>)}</div></section>
