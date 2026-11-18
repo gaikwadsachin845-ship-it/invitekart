@@ -13,6 +13,7 @@ type FabricObject = {
 };
 type FabricCanvas = {
   add: (...objects: unknown[]) => void;
+  setActiveObject: (object: unknown) => void;
   remove: (object: unknown) => void;
   getActiveObject: () => FabricObject | undefined;
   discardActiveObject: () => void;
@@ -59,16 +60,7 @@ export default function EditorPage() {
     let instance: FabricCanvas | null = null;
 
     async function setup() {
-      const presets: Record<string, { background: string; foreground: string; heading: string; tag: string }> = {
-        "blush-wedding": { background: "#f2e4df", foreground: "#8a4b50", heading: "Together Forever", tag: "A CELEBRATION OF LOVE" },
-        "royal-wedding": { background: "#eee4cf", foreground: "#8a6a34", heading: "शुभ विवाह", tag: "आप सादर आमंत्रित हैं" },
-        "garden-birthday": { background: "#e9eadc", foreground: "#52664e", heading: "Let’s Celebrate!", tag: "YOU’RE INVITED TO A BIRTHDAY" },
-        "confetti-birthday": { background: "#f8e8d2", foreground: "#a65d3b", heading: "Make a Wish!", tag: "BIRTHDAY PARTY" },
-        "minimal-engagement": { background: "#e5e8ed", foreground: "#53647a", heading: "The Beginning", tag: "JOIN OUR ENGAGEMENT" },
-        "floral-baby": { background: "#f5e7e8", foreground: "#a45e76", heading: "A Little One Is On The Way", tag: "BABY SHOWER" },
-        "housewarming": { background: "#eee6d9", foreground: "#78634b", heading: "Home Sweet Home", tag: "PLEASE JOIN OUR HOUSEWARMING" },
-        "diwali": { background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
-      };
+      const presets: Record<string, { background: string; foreground: string; heading: string; tag: string; style?: string }> = {};
       const templateId = new URLSearchParams(window.location.search).get("template") || "";
       let chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
       let customPreviewUrl: string | undefined;
@@ -107,7 +99,8 @@ export default function EditorPage() {
           left: 22, top: 22, width: 376, height: 516, fill: "transparent",
           stroke: "#b78e70", strokeWidth: 1, selectable: false, evented: false,
         });
-        const ornament = new fabric.Text(chosen?.tag || "✦   ❧   ✦", {
+        const motif = chosen?.style === "indian" ? "✥   ॐ   ✥" : chosen?.style === "celestial" ? "☾   ✧   ☆" : chosen?.style === "floral" || chosen?.style === "botanical" ? "❀   ❧   ❀" : chosen?.style === "diya" ? "🪔   ✦   🪔" : chosen?.style === "balloons" ? "○   ◌   ○" : chosen?.style === "jungle" || chosen?.style === "woodland" ? "❧   ♧   ❧" : "✦   ❧   ✦";
+        const ornament = new fabric.Text(chosen?.tag || motif, {
           left: 210, top: 105, originX: "center", fontSize: chosen ? 13 : 26,
           fill: canvasText, selectable: false, evented: false,
         });
@@ -369,7 +362,7 @@ export default function EditorPage() {
         </div>
       </section>
 
-      <style>{\`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}\`}</style>
+      <style>{`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}`}</style>
     </main>
   );
 }

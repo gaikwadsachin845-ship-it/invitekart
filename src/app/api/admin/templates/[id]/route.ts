@@ -8,7 +8,7 @@ const schema = z.object({
   title: z.string().trim().min(2).max(100),
   slug: z.string().trim().min(2).max(120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   description: z.string().trim().max(300).optional().default(""),
-  category: z.enum(["Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Festival"]),
+  category: z.enum(["Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Puja", "Anniversary", "Graduation", "Corporate", "Festival"]),
   language: z.enum(["en", "hi", "mr", "kn", "ta", "te"]).default("en"),
   previewUrl: z.string().min(1).max(3_000_000),
   heading: z.string().trim().min(1).max(120),
@@ -19,7 +19,7 @@ const schema = z.object({
 });
 const occasionMap: Record<string, Occasion> = {
   Wedding: Occasion.WEDDING, Birthday: Occasion.BIRTHDAY, Engagement: Occasion.ENGAGEMENT,
-  "Baby shower": Occasion.BABY_SHOWER, Housewarming: Occasion.HOUSEWARMING, Festival: Occasion.OTHER,
+  "Baby shower": Occasion.BABY_SHOWER, Housewarming: Occasion.HOUSEWARMING, "Naming ceremony": Occasion.NAMING_CEREMONY, Puja: Occasion.OTHER, Anniversary: Occasion.OTHER, Graduation: Occasion.OTHER, Corporate: Occasion.OTHER, Festival: Occasion.OTHER,
 };
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
@@ -35,7 +35,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
         title: value.title, slug: value.slug, description: value.description,
         occasion: occasionMap[value.category], language: value.language,
         previewUrl: value.previewUrl, status: value.status as TemplateStatus,
-        designJson: { heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground } as Prisma.InputJsonValue,
+        designJson: { category: value.category, heading: value.heading, tag: value.tag, background: value.background, foreground: value.foreground } as Prisma.InputJsonValue,
       },
     });
     return NextResponse.json({ template });
