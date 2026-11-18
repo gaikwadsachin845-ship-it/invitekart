@@ -5,7 +5,7 @@ import { weddingTemplates, type InvitationTemplate } from "@/lib/wedding-templat
 
 const otherTemplates: InvitationTemplate[] = [];
 type GalleryTemplate = InvitationTemplate & { previewUrl?: string; custom?: boolean };
-const categories = ["All", "Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Festival", "Anniversary", "Puja", "Graduation", "Corporate"];
+const categories = ["All", "Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Festival", "Anniversary", "Puja", "Religious", "South Indian", "Family celebration", "Party", "Retirement", "Milestone celebration", "Graduation", "Corporate"];
 const occasionNames: Record<string, string> = { WEDDING: "Wedding", BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", BABY_SHOWER: "Baby shower", HOUSEWARMING: "Housewarming", NAMING_CEREMONY: "Naming ceremony", OTHER: "Festival" };
 
 function previewSymbol(style?: string) {
