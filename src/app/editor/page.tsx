@@ -13,6 +13,7 @@ type FabricObject = {
 };
 type FabricCanvas = {
   add: (...objects: unknown[]) => void;
+  setActiveObject: (object: unknown) => void;
   remove: (object: unknown) => void;
   getActiveObject: () => FabricObject | undefined;
   discardActiveObject: () => void;
