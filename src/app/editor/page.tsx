@@ -370,7 +370,7 @@ export default function EditorPage() {
         </div>
       </section>
 
-      <style>{\`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}\`}</style>
+      <style>{`@media(max-width:900px){.ik-editor-layout{grid-template-columns:1fr!important}.ik-editor-layout aside{width:100%}} canvas{max-width:100%;height:auto!important}`}</style>
     </main>
   );
 }
