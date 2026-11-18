@@ -1,21 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { weddingTemplates, type InvitationTemplate } from "@/lib/wedding-templates";
 
-type InvitationTemplate = {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  background: string;
-  foreground: string;
-  heading: string;
-  tag: string;
-};
-
-const templates: InvitationTemplate[] = [
-  { id: "blush-wedding", name: "Blush Romance", category: "Wedding", description: "Soft blush tones with an elegant romantic feel.", background: "#f2e4df", foreground: "#8a4b50", heading: "Together Forever", tag: "A CELEBRATION OF LOVE" },
-  { id: "royal-wedding", name: "Royal Gold", category: "Wedding", description: "A classic ivory and gold wedding invitation.", background: "#eee4cf", foreground: "#8a6a34", heading: "शुभ विवाह", tag: "आप सादर आमंत्रित हैं" },
+const otherTemplates: InvitationTemplate[] = [
   { id: "garden-birthday", name: "Garden Party", category: "Birthday", description: "Fresh botanical colours for a joyful birthday.", background: "#e9eadc", foreground: "#52664e", heading: "Let’s Celebrate!", tag: "YOU’RE INVITED TO A BIRTHDAY" },
   { id: "confetti-birthday", name: "Happy Confetti", category: "Birthday", description: "A bright, playful design for a special day.", background: "#f8e8d2", foreground: "#a65d3b", heading: "Make a Wish!", tag: "BIRTHDAY PARTY" },
   { id: "minimal-engagement", name: "Modern Minimal", category: "Engagement", description: "Clean lines and a contemporary colour palette.", background: "#e5e8ed", foreground: "#53647a", heading: "The Beginning", tag: "JOIN OUR ENGAGEMENT" },
@@ -23,6 +11,7 @@ const templates: InvitationTemplate[] = [
   { id: "housewarming", name: "New Beginnings", category: "Housewarming", description: "Warm earthy colours to celebrate a new home.", background: "#eee6d9", foreground: "#78634b", heading: "Home Sweet Home", tag: "PLEASE JOIN OUR HOUSEWARMING" },
   { id: "diwali", name: "Festival of Lights", category: "Festival", description: "A festive design with rich, celebratory colours.", background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
 ];
+const templates: InvitationTemplate[] = [...weddingTemplates, ...otherTemplates];
 
 const categories = ["All", "Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Festival"];
 
