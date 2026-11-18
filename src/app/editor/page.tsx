@@ -59,7 +59,7 @@ export default function EditorPage() {
     let instance: FabricCanvas | null = null;
 
     async function setup() {
-      const presets: Record<string, { background: string; foreground: string; heading: string; tag: string }> = {
+      const presets: Record<string, { background: string; foreground: string; heading: string; tag: string; style?: string }> = {
         "blush-wedding": { background: "#f2e4df", foreground: "#8a4b50", heading: "Together Forever", tag: "A CELEBRATION OF LOVE" },
         "royal-wedding": { background: "#eee4cf", foreground: "#8a6a34", heading: "शुभ विवाह", tag: "आप सादर आमंत्रित हैं" },
         "garden-birthday": { background: "#e9eadc", foreground: "#52664e", heading: "Let’s Celebrate!", tag: "YOU’RE INVITED TO A BIRTHDAY" },
