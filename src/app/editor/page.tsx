@@ -63,7 +63,7 @@ export default function EditorPage() {
       const presets: Record<string, { background: string; foreground: string; heading: string; tag: string; style?: string }> = {};
       const templateId = new URLSearchParams(window.location.search).get("template") || "";
       let chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
-      let customPreviewUrl: string | undefined;
+      let customPreviewUrl: string | undefined;\n      let customWeddingFields: Array<{ label?: string; text?: string }> = [];
       if (!chosen && templateId) {
         const response = await fetch("/api/templates");
         if (response.ok) {
