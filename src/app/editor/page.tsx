@@ -65,7 +65,6 @@ export default function EditorPage() {
       let chosen = weddingTemplates.find((item) => item.id === templateId) || presets[templateId];
       let customPreviewUrl: string | undefined;
       let customWeddingFields: Array<{ label?: string; text?: string }> = [];
-      let customWeddingFields: Array<{ label?: string; text?: string }> = [];
       if (!chosen && templateId) {
         const response = await fetch("/api/templates");
         if (response.ok) {
