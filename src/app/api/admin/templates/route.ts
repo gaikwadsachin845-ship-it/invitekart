@@ -15,7 +15,8 @@ const schema = z.object({
   tag: z.string().trim().max(120).default(""),
   background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   foreground: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-  weddingText: z.string().max(12000).optional().default(""),\n  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  weddingText: z.string().max(12000).optional().default(""),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
 });
 
 const occasionMap: Record<string, Occasion> = {
