@@ -3,16 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { weddingTemplates, type InvitationTemplate } from "@/lib/wedding-templates";
 
-const otherTemplates: InvitationTemplate[] = [
-  { id: "garden-birthday", name: "Garden Party", category: "Birthday", description: "Fresh botanical colours for a joyful birthday.", background: "#e9eadc", foreground: "#52664e", heading: "Let’s Celebrate!", tag: "YOU’RE INVITED TO A BIRTHDAY" },
-  { id: "confetti-birthday", name: "Happy Confetti", category: "Birthday", description: "A bright, playful design for a special day.", background: "#f8e8d2", foreground: "#a65d3b", heading: "Make a Wish!", tag: "BIRTHDAY PARTY" },
-  { id: "minimal-engagement", name: "Modern Minimal", category: "Engagement", description: "Clean lines and a contemporary colour palette.", background: "#e5e8ed", foreground: "#53647a", heading: "The Beginning", tag: "JOIN OUR ENGAGEMENT" },
-  { id: "floral-baby", name: "Little Bloom", category: "Baby shower", description: "Gentle floral styling for a growing family.", background: "#f5e7e8", foreground: "#a45e76", heading: "A Little One Is On The Way", tag: "BABY SHOWER" },
-  { id: "housewarming", name: "New Beginnings", category: "Housewarming", description: "Warm earthy colours to celebrate a new home.", background: "#eee6d9", foreground: "#78634b", heading: "Home Sweet Home", tag: "PLEASE JOIN OUR HOUSEWARMING" },
-  { id: "diwali", name: "Festival of Lights", category: "Festival", description: "A festive design with rich, celebratory colours.", background: "#f5e1c5", foreground: "#9a4d20", heading: "शुभ दीपावली", tag: "HAPPY DIWALI" },
-];
+const otherTemplates: InvitationTemplate[] = [];
 type GalleryTemplate = InvitationTemplate & { previewUrl?: string; custom?: boolean };
-const categories = ["All", "Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Festival", "Anniversary", "Puja", "Graduation", "Corporate"];
+const categories = ["All", "Wedding", "Birthday", "Engagement", "Baby shower", "Housewarming", "Naming ceremony", "Festival", "Anniversary", "Puja", "Graduation", "Corporate"];
 const occasionNames: Record<string, string> = { WEDDING: "Wedding", BIRTHDAY: "Birthday", ENGAGEMENT: "Engagement", BABY_SHOWER: "Baby shower", HOUSEWARMING: "Housewarming", OTHER: "Festival" };
 
 function previewSymbol(style?: string) {
