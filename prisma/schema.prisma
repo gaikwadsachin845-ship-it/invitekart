@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum TemplateStatus { DRAFT PUBLISHED ARCHIVED }
+enum Occasion { WEDDING BIRTHDAY ENGAGEMENT BABY_SHOWER HOUSEWARMING NAMING_CEREMONY OTHER }
+model Template {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  description String?
+  occasion    Occasion
+  language    String         @default("en")
+  previewUrl  String
+  designJson  Json
+  isFree      Boolean        @default(true)
+  status      TemplateStatus @default(DRAFT)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  @@index([occasion, language, status])
+}
+model Invitation {
+  id          String   @id @default(cuid())
+  shareId     String   @unique @default(cuid())
+  templateId  String?
+  title       String
+  language    String   @default("en")
+  designJson  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([shareId])
+}
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
