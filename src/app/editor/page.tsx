@@ -20,6 +20,10 @@ export default function EditorPage() {
   const [background, setBackground] = useState("#f5e9df");
   const [textColor, setTextColor] = useState("#754c47");
   const [status, setStatus] = useState("Your design is ready to edit");
+  const [fontFamily, setFontFamily] = useState("Georgia");
+  const [fontSize, setFontSize] = useState(24);
+  const [bold, setBold] = useState(false);
+  const [alignment, setAlignment] = useState("center");
 
   useEffect(() => {
     let active = true;
@@ -158,6 +162,23 @@ export default function EditorPage() {
     canvas?.renderAll();
   }
 
+  function applyTextSettings() {
+    const canvas = canvasRef.current;
+    const selected = canvas?.getActiveObject() as { set?: (value: object) => void } | undefined;
+    if (!selected) {
+      setStatus("Select a text item on the invitation first");
+      return;
+    }
+    selected.set?.({
+      fontFamily,
+      fontSize,
+      fontWeight: bold ? "bold" : "normal",
+      textAlign: alignment,
+    });
+    canvas?.renderAll();
+    setStatus("Text formatting updated");
+  }
+
   function downloadPng() {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -213,6 +234,20 @@ export default function EditorPage() {
             <input aria-label="Background color" type="color" value={background} onChange={e => changeBackground(e.target.value)} style={colorInput} />
             <label style={fieldLabel}>TEXT / OBJECT COLOR</label>
             <input aria-label="Text color" type="color" value={textColor} onChange={e => changeTextColor(e.target.value)} style={colorInput} />
+            <label style={fieldLabel}>FONT FAMILY</label>
+            <select aria-label="Font family" value={fontFamily} onChange={e => setFontFamily(e.target.value)} style={selectInput}>
+              <option>Georgia</option><option>Arial</option><option>Times New Roman</option><option>Verdana</option><option>Courier New</option>
+            </select>
+            <label style={fieldLabel}>FONT SIZE · {fontSize}px</label>
+            <input aria-label="Font size" type="range" min="10" max="64" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} style={{ width: "100%" }} />
+            <label style={{ ...toolButton, display: "flex", alignItems: "center", gap: 8 }}>
+              <input type="checkbox" checked={bold} onChange={e => setBold(e.target.checked)} /> Bold text
+            </label>
+            <label style={fieldLabel}>TEXT ALIGNMENT</label>
+            <select aria-label="Text alignment" value={alignment} onChange={e => setAlignment(e.target.value)} style={selectInput}>
+              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
+            </select>
+            <button style={toolButton} onClick={applyTextSettings}>Apply text formatting</button>
             <div style={{ borderTop: "1px solid #eee5dc", margin: "18px 0" }} />
             <h3 style={panelHeading}>Coming next</h3>
             <ul style={{ paddingLeft: 18, color: "#81776e", fontSize: 12, lineHeight: 1.9 }}>
@@ -237,3 +272,4 @@ const panelHeading: React.CSSProperties = { fontFamily: "Georgia, serif", fontSi
 const toolButton: React.CSSProperties = { width: "100%", display: "block", margin: "9px 0", padding: "11px 12px", textAlign: "left", border: "1px solid #e8ded4", background: "#fff", borderRadius: 4, color: "#403832", cursor: "pointer", fontSize: 13 };
 const fieldLabel: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, color: "#6e655d", margin: "13px 0 7px" };
 const colorInput: React.CSSProperties = { width: "100%", height: 42, border: "1px solid #e8ded4", background: "white", padding: 4, borderRadius: 4 };
+const selectInput: React.CSSProperties = { width: "100%", padding: 10, border: "1px solid #e8ded4", background: "white", borderRadius: 4, color: "#403832" };
